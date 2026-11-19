@@ -11,3 +11,7 @@ body{font-size:16px}header{background:#f7f4edf5}nav{font-size:14px;gap:20px}nav 
 @media(max-width:700px){header{height:auto;min-height:100px;padding:14px 20px;flex-direction:column;align-items:flex-start;gap:6px}nav{width:100%;justify-content:space-between;gap:8px;font-size:12px}html{scroll-padding-top:122px}.hero{grid-template-columns:1fr;padding:36px 0;gap:32px}.hero-art{height:420px;max-width:500px;width:100%;justify-self:center;transform:rotate(1deg)}.hero-art img{height:340px}.lesson-grid,.finish-grid,.compare{grid-template-columns:1fr;gap:24px}.overview{grid-template-columns:1fr 1fr}.section-heading{align-items:flex-start;flex-direction:column;gap:12px}.step{padding:18px;grid-template-columns:30px minmax(0,1fr);gap:12px}.step-number{height:30px;width:30px}.step-top{flex-wrap:wrap}.notebook{margin-top:8px}.lesson,.gallery,.submission{padding-top:48px}h1{font-size:42px}.hero-copy{font-size:16px}.art-body{padding:14px}.art-image img{height:200px}.character-profile{gap:10px}.face-demo{gap:12px}footer{align-items:flex-start;flex-direction:column;gap:8px}}
 @media(max-width:380px){main{padding:0 16px}nav{font-size:11px}h1{font-size:36px}.art-grid{grid-template-columns:1fr}.floating-note{font-size:12px;right:8px}.overview{padding:16px;gap:14px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.step{transition:none}}
+
+/* Keep the studio note clear of the character's face at every width. */
+.hero-art .floating-note{top:56px;right:16px;transform:rotate(4deg);font-size:12px;padding:8px 12px}
+
