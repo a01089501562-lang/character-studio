@@ -1,15 +1,15 @@
 'use strict';
 (() => {
-  const host = document.querySelector('#steps1 .step:nth-child(3) > div');
-  const open = document.createElement('button');
-  open.className = 'button primary canvas-open';
-  open.textContent = '새 캔버스';
-  open.setAttribute('aria-haspopup', 'dialog');
-  host.append(open);
+  const stages = [
+    {step:3, label:'스케치 캔버스 열기', title:'기본형 스케치 캔버스', help:'원과 선으로 나만의 캐릭터를 그려 보세요.'},
+    {step:4, label:'선화·채색 캔버스 열기', title:'기본형 선화·채색 캔버스', help:'3번에서 그린 그림을 이어서 다듬고 색을 더해 보세요. 이 캔버스는 단일 레이어이므로, 레이어를 나누려면 드로잉 앱을 사용하세요.'},
+    {step:5, label:'완성 확인·저장 캔버스 열기', title:'기본형 완성 확인·저장 캔버스', help:'완성한 기본형을 확인하고 PNG로 저장하세요. 레이어가 있는 편집 원본은 사용 중인 드로잉 앱에서 별도로 저장하세요.'}
+  ];
+  let opener = null;
   const panel = document.createElement('dialog');
   panel.className = 'drawing-dialog';
   panel.setAttribute('aria-labelledby', 'drawingTitle');
-  panel.innerHTML = `<div class="drawing-heading"><div><h2 id="drawingTitle">기본형 스케치 캔버스</h2><p>원과 선으로 나만의 캐릭터를 그려 보세요.</p></div><button type="button" class="button secondary" id="drawingClose">닫기</button></div>
+  panel.innerHTML = `<div class="drawing-heading"><div><h2 id="drawingTitle">기본형 스케치 캔버스</h2><p id="drawingInstructions">원과 선으로 나만의 캐릭터를 그려 보세요.</p></div><button type="button" class="button secondary" id="drawingClose">닫기</button></div>
     <div class="drawing-tools" role="toolbar" aria-label="그리기 도구">
       <button type="button" class="button secondary" id="drawingPen" aria-pressed="true">펜</button>
       <button type="button" class="button secondary" id="drawingEraser" aria-pressed="false">지우개</button>
@@ -82,13 +82,28 @@
     exported.toBlob(blob=>{
       if(!blob){status('이미지 저장에 실패했어요. 다시 시도해 주세요.');return;}
       const url=URL.createObjectURL(blob),link=document.createElement('a');
-      link.href=url;link.download='캐릭터_기본형_스케치.png';link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
+      link.href=url;link.download='캐릭터_기본형.png';link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
       dirty=false;status('PNG 다운로드를 요청했어요. 다운로드 폴더를 확인하세요.');
     },'image/png');
   };
-  open.onclick=()=>{panel.showModal();document.body.classList.add('drawing-active');};
+  stages.forEach(stage => {
+    const host = document.querySelector(`#steps1 .step:nth-child(${stage.step}) > div`);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'button primary canvas-open';
+    button.textContent = stage.label;
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.onclick = () => {
+      opener = button;
+      find('drawingTitle').textContent = stage.title;
+      find('drawingInstructions').textContent = stage.help;
+      panel.showModal();
+      document.body.classList.add('drawing-active');
+    };
+    host.append(button);
+  });
   find('drawingClose').onclick=()=>panel.close();
-  panel.addEventListener('close',()=>{active=null;document.body.classList.remove('drawing-active');open.focus();});
+  panel.addEventListener('close',()=>{active=null;document.body.classList.remove('drawing-active');opener?.focus();});
   window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
   controls();
 })();
