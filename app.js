@@ -1,4 +1,4 @@
-import {lessons,artworks,selfChecks} from './lesson-data.js';
+import {lessons,artworks,selfChecks,turnaroundChecks} from './lesson-data.js';
 'use strict';
 let state = {checks:{},notes:{}};
 const storageKey='character-studio-v1';
@@ -9,6 +9,7 @@ lessons.forEach((steps,n)=>{document.querySelector(`#steps${n+1}`).innerHTML=ste
 document.querySelector('#artCards').innerHTML=artworks.map(a=>`<article class="art-card"><button class="art-image" data-art="${a.id}" aria-label="${a.title} 예시 확대"><img src="assets/${a.id}.svg" alt="루미 ${a.title} 예시"><span class="zoom">확대 ↗</span></button><div class="art-body"><span class="mini-label">${a.tag}</span><h3>${a.title}</h3><p>${a.description}</p></div></article>`).join('');
 
 document.querySelector('#selfChecks').innerHTML=selfChecks.map((s,i)=>checkMarkup(`self-${i}`,s)).join('');
+document.querySelector('#turnChecks').innerHTML=turnaroundChecks.map(c=>checkMarkup(c.id,c.label)).join('');
 function updateProgress(){const all=[...document.querySelectorAll('[data-check]')];const count=all.filter(el=>el.checked).length;document.querySelector('#progress').max=all.length;document.querySelector('#progress').value=count;document.querySelector('#progress').textContent=`${Math.round(count/all.length*100)}%`;document.querySelector('#progressText').textContent=`${count} / ${all.length}`;}
 document.querySelectorAll('[data-check]').forEach(el=>{el.checked=state.checks[el.dataset.check]===true;el.addEventListener('change',()=>{state.checks[el.dataset.check]=el.checked;persist();updateProgress();});});
 ['characterName','personality','features'].forEach(id=>{const el=document.getElementById(id);el.value=typeof state.notes[id]==='string'?state.notes[id]:'';el.addEventListener('input',()=>{state.notes[id]=el.value;persist();});});

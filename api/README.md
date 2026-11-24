@@ -68,3 +68,15 @@ with urllib.request.urlopen(request) as response:
 ## 검증
 
 `npm test`는 SQLite 기반으로 인증번호 단일 사용, 승인 전 차단, 교사 역할, 학생·학급 격리, 버전 충돌, 키 폐기, 세션 만료, 메일 실패를 검사합니다. 실제 Google 수신·Cloudflare D1 배포·태블릿 브라우저 테스트는 별도 운영 검증이며 로컬 테스트로 대체되지 않습니다.
+
+Node.js 24 이상에서 `npm ci`로 고정된 의존성을 설치한 뒤 다음을 실행합니다.
+
+```sh
+npm test
+npm run test:browser
+npm run check:deploy
+```
+
+`npm run test:browser`는 설치된 Chrome/Chromium과 임시 SQLite DB, 가짜 메일 발송기를 사용합니다. 브라우저를 자동으로 찾지 못하면 `CHROME_PATH` 환경변수에 실행 파일 경로를 지정하세요. 교사·학생 로그인, 학급 승인, 자동 저장과 재접속, 저장 충돌, 불러오기 실패 시 편집 차단, 로그아웃 후 계정 분리, 모바일 가로 넘침, API 미설정 시 로컬 저장을 확인합니다. 화면 캡처와 결과 JSON은 출력되는 시스템 임시 폴더에 저장됩니다. 실제 학생 기록이나 메일 발송 서비스는 사용하지 않습니다.
+
+`npm run check:deploy`는 Worker 번들만 검증하며 운영 배포나 DB·메일 연결 검증을 수행하지 않습니다. 운영 DB ID, 교사 이메일, 메일 설정을 완료하고 최초 배포 절차를 마치기 전에는 `config.js`의 `apiUrl`을 비워 둡니다.

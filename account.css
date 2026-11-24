@@ -1,1 +1,75 @@
-.account-panel{margin:24px 0;padding:24px;border:2px solid #237f79;border-radius:18px;background:#f5fffd;color:#173b39}.account-panel form{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0;align-items:end}.account-panel label{display:grid;gap:5px;min-width:180px;flex:1}.account-panel input,.account-panel select{padding:10px;border:1px solid #60938d;border-radius:6px;max-width:100%;background:white;color:#173b39}.account-panel button{padding:10px 14px;margin:5px;border:1px solid #237f79;border-radius:8px;background:white;color:#174943;cursor:pointer}.account-panel button:disabled{opacity:.5}.account-class{border-top:1px solid #a8c9c3;margin-top:20px;padding-top:15px}.account-panel pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:12px;max-height:400px;overflow:auto}.account-panel :focus-visible{outline:3px solid #ed9e24;outline-offset:3px}@media(max-width:600px){.account-panel{padding:14px}.account-panel label{width:100%}.account-panel form{display:grid}}@media print{.account-panel{display:none}}
+.account-panel {
+  margin: 24px 0;
+  padding: 24px;
+  border: 2px solid #237f79;
+  border-radius: 18px;
+  background: #f5fffd;
+  color: #173b39;
+}
+.account-panel form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+  align-items: end;
+}
+.account-panel label {
+  display: grid;
+  gap: 5px;
+  min-width: 180px;
+  flex: 1;
+}
+.account-panel input,
+.account-panel select {
+  padding: 10px;
+  border: 1px solid #60938d;
+  border-radius: 6px;
+  max-width: 100%;
+  background: white;
+  color: #173b39;
+}
+.account-panel button {
+  padding: 10px 14px;
+  margin: 5px;
+  border: 1px solid #237f79;
+  border-radius: 8px;
+  background: white;
+  color: #174943;
+  cursor: pointer;
+}
+.account-panel button:disabled {
+  opacity: 0.5;
+}
+.account-class {
+  border-top: 1px solid #a8c9c3;
+  margin-top: 20px;
+  padding-top: 15px;
+}
+.account-panel pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: white;
+  padding: 12px;
+  max-height: 400px;
+  overflow: auto;
+}
+.account-panel :focus-visible {
+  outline: 3px solid #ed9e24;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .account-panel {
+    padding: 14px;
+  }
+  .account-panel label {
+    width: 100%;
+  }
+  .account-panel form {
+    display: grid;
+  }
+}
+@media print {
+  .account-panel {
+    display: none;
+  }
+}
