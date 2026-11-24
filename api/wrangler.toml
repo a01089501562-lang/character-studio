@@ -1,0 +1,15 @@
+name = "character-studio-api"
+main = "worker.js"
+compatibility_date = "2026-11-24"
+workers_dev = true
+[vars]
+ALLOWED_ORIGIN = "https://a01089501562-lang.github.io"
+TEACHER_EMAILS = ""
+# Configure MAIL_URL, MAIL_SECRET and OTP_SECRET with wrangler secret put.
+[[d1_databases]]
+binding = "DB"
+database_name = "character-studio"
+database_id = "REPLACE_WITH_CREATED_DATABASE_ID"
+migrations_dir = "migrations"
+[triggers]
+crons = ["0 18 * * *"]

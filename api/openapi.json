@@ -1,0 +1,908 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Character Studio API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://YOUR-WORKER.workers.dev/api/v1"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "GET /health",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "security": []
+      }
+    },
+    "/lessons": {
+      "get": {
+        "summary": "GET /lessons",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "security": []
+      }
+    },
+    "/examples": {
+      "get": {
+        "summary": "GET /examples",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/request-code": {
+      "post": {
+        "summary": "POST /auth/request-code",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/verify-code": {
+      "post": {
+        "summary": "POST /auth/verify-code",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "challengeId",
+                  "code"
+                ],
+                "properties": {
+                  "challengeId": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "POST /auth/logout",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "summary": "GET /me",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        }
+      }
+    },
+    "/classes": {
+      "get": {
+        "summary": "GET /classes",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        }
+      },
+      "post": {
+        "summary": "POST /classes",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classes/join": {
+      "post": {
+        "summary": "POST /classes/join",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "studentNumber",
+                  "code"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "studentNumber": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classes/{id}/me/progress": {
+      "get": {
+        "summary": "GET /classes/{id}/me/progress",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "summary": "PUT /classes/{id}/me/progress",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "version",
+                  "notes",
+                  "checks"
+                ],
+                "properties": {
+                  "version": {
+                    "type": "integer"
+                  },
+                  "notes": {
+                    "type": "object"
+                  },
+                  "checks": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/classes/{id}/progress": {
+      "get": {
+        "summary": "GET /classes/{id}/progress",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/classes/{id}/members": {
+      "get": {
+        "summary": "GET /classes/{id}/members",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/classes/{id}/members/{userId}": {
+      "put": {
+        "summary": "PUT /classes/{id}/members/{userId}",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "status"
+                ],
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/classes/{id}/code": {
+      "post": {
+        "summary": "POST /classes/{id}/code",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/classes/{id}/keys": {
+      "get": {
+        "summary": "GET /classes/{id}/keys",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "POST /classes/{id}/keys",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "label"
+                ],
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/classes/{id}/keys/{keyId}": {
+      "delete": {
+        "summary": "DELETE /classes/{id}/keys/{keyId}",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/classes/{id}/records": {
+      "delete": {
+        "summary": "DELETE /classes/{id}/records",
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "400": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "401": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "403": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "404": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "409": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "429": {
+            "description": "오류: {error:{code,message}}"
+          },
+          "503": {
+            "description": "오류: {error:{code,message}}"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
