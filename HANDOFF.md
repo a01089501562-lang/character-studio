@@ -14,8 +14,10 @@
 - 사용자가 Cloudflare 이메일 인증을 완료한 뒤 Worker 생성/운영 배포 성공. 주소: `https://character-studio-api.character-studio-1f55a0ad.workers.dev`.
 - `/api/v1/health`에서 `{"ok":true}` 확인 완료. 이는 실제 메일 연결 검증을 의미하지 않는다.
 - `MAIL_URL` 등록 완료. `OTP_SECRET`은 암호학적 난수로 생성해 화면/파일에 출력하지 않고 등록 완료.
-- `MAIL_SECRET` 직접 입력용 PowerShell 창을 열었다. 아직 등록 성공은 확인하지 않았다. Google에 새로 저장한 값과 동일해야 한다.
-- 다음은 `secret list`로 `MAIL_SECRET` 등록 여부 확인 후 실제 메일/계정 검증이다. 실제 인증메일 검증은 아직 수행하지 않았다. `config.js`의 `apiUrl`은 계속 빈 값이다.
+- `secret list`로 `MAIL_SECRET`, `MAIL_URL`, `OTP_SECRET` 세 항목 등록 확인 완료. 비밀값 자체는 읽지 않았다.
+- 교사 이메일로 실제 `/auth/request-code` 요청을 테스트했으나 HTTP 503(메일 발송 확인 실패)을 반환했다.
+- 등록된 Google 웹 앱에 비밀값 없는 빈 JSON POST로 진단한 결과 HTTP 200 HTML에 `다음 스크립트 함수(doPost)를 찾을 수 없습니다.`가 표시됐다. 현재 URL의 배포 코드/버전 확인이 필요하다. 비밀값 불일치 여부는 아직 판단할 수 없다.
+- 다음은 인증메일용 Google Apps Script에 `api/mail/Code.gs` 내용이 저장되어 있는지 확인하고, 배포 관리에서 새 버전으로 갱신하는 것이다. 다른 프로젝트 URL이면 `MAIL_URL`도 갱신한다. 이후 실제 메일/계정 검증을 재개한다. `config.js`의 `apiUrl`은 계속 빈 값이다.
 
 ## 사용자 요청과 현재 상태
 
