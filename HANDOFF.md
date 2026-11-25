@@ -4,6 +4,16 @@
 
 ## 최신 체크포인트 (2026-11-25)
 
+### 최신 메일 연결 결과 (아래 실패 기록보다 우선)
+
+- 스크린샷에서 `doPost`가 기본 `myFunction` 안에 들어간 원인을 확인했다. 사용자가 바깥 함수 선언과 닫는 괄호를 제거하고 저장·새 배포했다.
+- 최신 주소로 Cloudflare의 `MAIL_URL` 갱신 완료: `https://script.google.com/macros/s/AKfycbz9glQQcTNwWERsSrjHpG7xMeb7kSsqC8vvYLKzos0ZHa8kmIWl_5VLA7Ok7dqC5ZVA/exec`
+- 교사 이메일로 실제 `/auth/request-code` 요청 성공. challengeId와 expiresIn 300 응답 확인.
+- 메일 서비스의 발송 성공 응답은 확인했으나 실제 받은편지함 수신 및 인증·계정 검증은 사용자 확인 대기 중이다. 인증번호는 채팅으로 받지 않는다.
+- 다음은 수신 확인 후 안전한 직접 입력 방식으로 인증·계정 흐름 검증이다. `config.js`의 `apiUrl`은 계속 빈 값이다.
+
+### 이전 진행 기록
+
 - Cloudflare OAuth 승인 성공 및 `wrangler whoami`로 로그인 확인 완료. 아래 로그인 실패 기록은 이전 이력이다.
 - 기존 D1 목록이 비어 있음을 확인한 뒤 `character-studio`를 APAC에 생성했다. DB ID `0b75110c-fee8-4d4c-89bd-8ddbff826a46`를 `api/wrangler.toml`에 반영했다.
 - 운영 DB에 `0001.sql` 마이그레이션 적용 완료(12개 명령).
