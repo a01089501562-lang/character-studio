@@ -9,7 +9,10 @@
 - 운영 DB에 `0001.sql` 마이그레이션 적용 완료(12개 명령).
 - `npm test` 4개, `npm run test:browser` 1개, `npm run check:deploy` 통과.
 - 사용자가 최초 교사 이메일을 `a01089501562@gmail.com`으로 확인했으며 `TEACHER_EMAILS`에 반영했다.
-- 다음은 비밀값 등록, Worker 배포 및 실제 메일/계정 검증이다. Google의 기존 `MAIL_SECRET`은 사용자가 안전한 직접 입력 방식으로 제공해야 하며 채팅으로 요청하지 않는다.
+- 사용자는 Google Apps Script의 `MAIL_SECRET`을 새 값으로 수정했다고 확인했다. 값은 채팅으로 요청하지 않는다. Cloudflare 등록은 완료되지 않았다.
+- 계정의 workers.dev 하위 도메인 `character-studio-1f55a0ad` 등록 완료.
+- Worker 생성/배포를 시도했지만 Cloudflare 오류 10034(계정 이메일 인증 필요)로 실패했다. 사용자가 Cloudflare 가입 이메일 인증을 완료한 뒤 `wrangler deploy`를 재실행해야 한다.
+- 다음은 이메일 인증, Worker 생성, 비밀값 등록 및 실제 메일/계정 검증이다. `MAIL_SECRET`은 Google에 새로 저장한 값과 동일하게 사용자가 직접 입력한다.
 - Worker 운영 배포와 실제 인증메일 검증은 아직 수행하지 않았다. `config.js`의 `apiUrl`은 계속 빈 값이다.
 
 ## 사용자 요청과 현재 상태
