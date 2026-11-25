@@ -8,8 +8,8 @@
 - 기존 D1 목록이 비어 있음을 확인한 뒤 `character-studio`를 APAC에 생성했다. DB ID `0b75110c-fee8-4d4c-89bd-8ddbff826a46`를 `api/wrangler.toml`에 반영했다.
 - 운영 DB에 `0001.sql` 마이그레이션 적용 완료(12개 명령).
 - `npm test` 4개, `npm run test:browser` 1개, `npm run check:deploy` 통과.
-- 최초 교사 이메일은 사용자에게 질문했으며 아직 확인 대기 중이다. `TEACHER_EMAILS`는 여전히 빈 값이다.
-- 다음은 교사 이메일 확정, 비밀값 등록, Worker 배포 및 실제 메일/계정 검증이다. Google의 기존 `MAIL_SECRET`은 사용자가 안전한 직접 입력 방식으로 제공해야 하며 채팅으로 요청하지 않는다.
+- 사용자가 최초 교사 이메일을 `a01089501562@gmail.com`으로 확인했으며 `TEACHER_EMAILS`에 반영했다.
+- 다음은 비밀값 등록, Worker 배포 및 실제 메일/계정 검증이다. Google의 기존 `MAIL_SECRET`은 사용자가 안전한 직접 입력 방식으로 제공해야 하며 채팅으로 요청하지 않는다.
 - Worker 운영 배포와 실제 인증메일 검증은 아직 수행하지 않았다. `config.js`의 `apiUrl`은 계속 빈 값이다.
 
 ## 사용자 요청과 현재 상태

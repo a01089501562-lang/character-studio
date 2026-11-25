@@ -4,7 +4,7 @@ compatibility_date = "2026-11-24"
 workers_dev = true
 [vars]
 ALLOWED_ORIGIN = "https://a01089501562-lang.github.io"
-TEACHER_EMAILS = ""
+TEACHER_EMAILS = "a01089501562@gmail.com"
 # Configure MAIL_URL, MAIL_SECRET and OTP_SECRET with wrangler secret put.
 [[d1_databases]]
 binding = "DB"
