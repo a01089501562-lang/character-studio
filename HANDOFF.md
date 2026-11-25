@@ -11,8 +11,10 @@
 - 교사 이메일로 실제 `/auth/request-code` 요청 성공. challengeId와 expiresIn 300 응답 확인.
 - 사용자 실제 메일 수신 확인 완료. 로컬 미리보기에서 사용자가 직접 인증번호를 입력했고 교사 표시를 확인했다. 프록시의 비밀값 없는 상태 기록에서 request-code/verify-code/me/classes 모두 HTTP 200 및 role=teacher 확인.
 - 교사 로그아웃 HTTP 200 및 사용자 화면 확인 완료. 사용자가 승인한 테스트 학생 주소로 실제 로그인(role=student), 학급 참여, 교사 승인, 진행 기록 저장(PUT 200), 새로고침 후 재조회(GET 200)까지 완료했다. 사용자가 `저장확인용` 값 유지도 확인했다.
-- 교사 화면의 학습 기록 조회 요청도 운영 API에서 HTTP 200 확인 완료. 테스트 학급/학생 데이터는 정리 대기 중이다.
-- `config.js`의 `apiUrl`을 운영 API로 활성화했다. `npm test`, `npm run test:browser`, `npm run check:deploy` 재통과. 공개 사이트 출처의 CORS preflight 204 및 허용 출처 확인 완료. GitHub Pages 반영 확인은 푸시 후 진행한다.
+- 교사 화면의 학습 기록 조회 요청도 운영 API에서 HTTP 200 확인 완료. DB에서 테스트 학생의 승인 상태와 `저장확인용` 저장값(version=3)을 확인한 뒤 테스트 진행 기록·학급 관계·학생 세션·학생 인증 요청·학생 계정·테스트 학급만 제거했다. 테스트 학급/학생 잔여 수 모두 0 확인. 교사 계정은 유지했다.
+- `config.js`의 `apiUrl`을 운영 API로 활성화하고 커밋 `88cc716`을 main에 푸시했다. `npm test`, `npm run test:browser`, `npm run check:deploy` 재통과. 공개 사이트 출처의 CORS preflight 204 및 허용 출처 확인 완료.
+- GitHub Pages의 config.js에 운영 API 반영 확인 완료. 실제 headless Chrome으로 공개 사이트에서 인증번호 받기 버튼 표시, 브라우저에서 운영 API health 200/ok=true, 페이지 JavaScript 오류 0을 확인했다. 공개 주소: `https://a01089501562-lang.github.io/character-studio/`.
+- 실제 인증메일·교사/학생 로그인·학생 참여/승인·저장/재조회·교사 조회·교사 로그아웃은 로컬 미리보기에서 운영 API로 검증했다. 공개 사이트에서 인증번호를 다시 발송하는 중복 검증은 하지 않았다. 이제 사용자는 공개 주소에서 교사 이메일로 로그인해 실제 학급을 만들면 된다.
 - 로컬 미리보기는 `http://127.0.0.1:8788`, 임시 서버 파일은 `%TEMP%/character-studio-live-preview.cjs`다. 운영 API로 전달하며 임시 config 응답에서만 API를 활성화한다. `/__verification`은 경로·상태·역할만 기록하며 인증번호·토큰·응답 본문은 기록하지 않는다. 프로세스는 세션 종료 시 중단될 수 있다.
 
 ### 이전 진행 기록
