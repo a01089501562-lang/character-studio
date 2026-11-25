@@ -9,8 +9,9 @@
 - 스크린샷에서 `doPost`가 기본 `myFunction` 안에 들어간 원인을 확인했다. 사용자가 바깥 함수 선언과 닫는 괄호를 제거하고 저장·새 배포했다.
 - 최신 주소로 Cloudflare의 `MAIL_URL` 갱신 완료: `https://script.google.com/macros/s/AKfycbz9glQQcTNwWERsSrjHpG7xMeb7kSsqC8vvYLKzos0ZHa8kmIWl_5VLA7Ok7dqC5ZVA/exec`
 - 교사 이메일로 실제 `/auth/request-code` 요청 성공. challengeId와 expiresIn 300 응답 확인.
-- 메일 서비스의 발송 성공 응답은 확인했으나 실제 받은편지함 수신 및 인증·계정 검증은 사용자 확인 대기 중이다. 인증번호는 채팅으로 받지 않는다.
-- 다음은 수신 확인 후 안전한 직접 입력 방식으로 인증·계정 흐름 검증이다. `config.js`의 `apiUrl`은 계속 빈 값이다.
+- 사용자 실제 메일 수신 확인 완료. 로컬 미리보기에서 사용자가 직접 인증번호를 입력했고 교사 표시를 확인했다. 프록시의 비밀값 없는 상태 기록에서 request-code/verify-code/me/classes 모두 HTTP 200 및 role=teacher 확인.
+- 교사 로그아웃 확인과 별도 학생 테스트 이메일 선택을 사용자에게 요청했다. 실제 학생 승인·저장 검증 후 공개 활성화를 진행한다. `config.js`의 `apiUrl`은 계속 빈 값이다.
+- 로컬 미리보기는 `http://127.0.0.1:8788`, 임시 서버 파일은 `%TEMP%/character-studio-live-preview.cjs`다. 운영 API로 전달하며 임시 config 응답에서만 API를 활성화한다. `/__verification`은 경로·상태·역할만 기록하며 인증번호·토큰·응답 본문은 기록하지 않는다. 프로세스는 세션 종료 시 중단될 수 있다.
 
 ### 이전 진행 기록
 
