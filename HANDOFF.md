@@ -11,9 +11,11 @@
 - 사용자가 최초 교사 이메일을 `a01089501562@gmail.com`으로 확인했으며 `TEACHER_EMAILS`에 반영했다.
 - 사용자는 Google Apps Script의 `MAIL_SECRET`을 새 값으로 수정했다고 확인했다. 값은 채팅으로 요청하지 않는다. Cloudflare 등록은 완료되지 않았다.
 - 계정의 workers.dev 하위 도메인 `character-studio-1f55a0ad` 등록 완료.
-- Worker 생성/배포를 시도했지만 Cloudflare 오류 10034(계정 이메일 인증 필요)로 실패했다. 사용자가 Cloudflare 가입 이메일 인증을 완료한 뒤 `wrangler deploy`를 재실행해야 한다.
-- 다음은 이메일 인증, Worker 생성, 비밀값 등록 및 실제 메일/계정 검증이다. `MAIL_SECRET`은 Google에 새로 저장한 값과 동일하게 사용자가 직접 입력한다.
-- Worker 운영 배포와 실제 인증메일 검증은 아직 수행하지 않았다. `config.js`의 `apiUrl`은 계속 빈 값이다.
+- 사용자가 Cloudflare 이메일 인증을 완료한 뒤 Worker 생성/운영 배포 성공. 주소: `https://character-studio-api.character-studio-1f55a0ad.workers.dev`.
+- `/api/v1/health`에서 `{"ok":true}` 확인 완료. 이는 실제 메일 연결 검증을 의미하지 않는다.
+- `MAIL_URL` 등록 완료. `OTP_SECRET`은 암호학적 난수로 생성해 화면/파일에 출력하지 않고 등록 완료.
+- `MAIL_SECRET` 직접 입력용 PowerShell 창을 열었다. 아직 등록 성공은 확인하지 않았다. Google에 새로 저장한 값과 동일해야 한다.
+- 다음은 `secret list`로 `MAIL_SECRET` 등록 여부 확인 후 실제 메일/계정 검증이다. 실제 인증메일 검증은 아직 수행하지 않았다. `config.js`의 `apiUrl`은 계속 빈 값이다.
 
 ## 사용자 요청과 현재 상태
 
