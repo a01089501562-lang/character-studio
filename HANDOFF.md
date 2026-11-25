@@ -17,7 +17,8 @@
 - `secret list`로 `MAIL_SECRET`, `MAIL_URL`, `OTP_SECRET` 세 항목 등록 확인 완료. 비밀값 자체는 읽지 않았다.
 - 교사 이메일로 실제 `/auth/request-code` 요청을 테스트했으나 HTTP 503(메일 발송 확인 실패)을 반환했다.
 - 등록된 Google 웹 앱에 비밀값 없는 빈 JSON POST로 진단한 결과 HTTP 200 HTML에 `다음 스크립트 함수(doPost)를 찾을 수 없습니다.`가 표시됐다. 현재 URL의 배포 코드/버전 확인이 필요하다. 비밀값 불일치 여부는 아직 판단할 수 없다.
-- 다음은 인증메일용 Google Apps Script에 `api/mail/Code.gs` 내용이 저장되어 있는지 확인하고, 배포 관리에서 새 버전으로 갱신하는 것이다. 다른 프로젝트 URL이면 `MAIL_URL`도 갱신한다. 이후 실제 메일/계정 검증을 재개한다. `config.js`의 `apiUrl`은 계속 빈 값이다.
+- 사용자가 새 배포 URL을 제공해 `MAIL_URL`을 아래 새 주소로 갱신했다. 실제 인증메일 요청은 여전히 503이며, 새 주소의 빈 JSON POST도 `다음 스크립트 함수(doPost)를 찾을 수 없습니다.`를 반환했다.
+- 다음은 사용자가 실제 편집/배포한 프로젝트의 `Code.gs`에서 `function doPost(e)` 존재와 저장 여부를 확인하는 것이다. 코드가 들어 있는 프로젝트의 새 버전을 배포한 뒤 메일 검증을 재개한다. `config.js`의 `apiUrl`은 계속 빈 값이다.
 
 ## 사용자 요청과 현재 상태
 
@@ -32,7 +33,7 @@
 - 사용자는 스크립트 속성 `MAIL_SECRET`을 설정했다고 확인했다. 값은 사용자만 보관하며 채팅이나 Git에 기록하지 않는다.
 - 웹 앱을 '나로 실행 / 모든 사용자 접근' 설정으로 배포하도록 안내했고 사용자가 아래 URL을 제공했다. 실제 설정과 발송 성공은 아직 검증하지 않았다.
 - 인증메일용 웹 앱 URL (`MAIL_URL`로 사용할 주소):
-  `https://script.google.com/macros/s/AKfycbyJ_6XuxcHRtHH7SfeRuYy_calpuBrj2DOloqjSj9fBcF2qlPgg3z_TlAbURaLHC9zw/exec`
+  `https://script.google.com/macros/s/AKfycbzIhQlkmYi0NaRPz07a9PJnkWmwBLVYGVCLBFs0_rD0KT8Wdzz_jfcDiz0IeCfvLWUg/exec`
 - 이 주소는 인증메일 전용이다. `config.js`의 기존 작품 제출용 `appsScriptUrl`을 이 주소로 덮어쓰지 않는다.
 
 ## 중단 지점: Cloudflare OAuth 대기 시간 초과
