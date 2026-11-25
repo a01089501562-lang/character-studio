@@ -9,7 +9,7 @@ TEACHER_EMAILS = ""
 [[d1_databases]]
 binding = "DB"
 database_name = "character-studio"
-database_id = "REPLACE_WITH_CREATED_DATABASE_ID"
+database_id = "0b75110c-fee8-4d4c-89bd-8ddbff826a46"
 migrations_dir = "migrations"
 [triggers]
 crons = ["0 18 * * *"]

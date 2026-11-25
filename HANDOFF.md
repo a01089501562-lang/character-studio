@@ -1,6 +1,16 @@
 # 작업 재개 메모
 
-최종 기록: 2026-11-24 (한국 시간).
+최종 기록: 2026-11-25 (한국 시간).
+
+## 최신 체크포인트 (2026-11-25)
+
+- Cloudflare OAuth 승인 성공 및 `wrangler whoami`로 로그인 확인 완료. 아래 로그인 실패 기록은 이전 이력이다.
+- 기존 D1 목록이 비어 있음을 확인한 뒤 `character-studio`를 APAC에 생성했다. DB ID `0b75110c-fee8-4d4c-89bd-8ddbff826a46`를 `api/wrangler.toml`에 반영했다.
+- 운영 DB에 `0001.sql` 마이그레이션 적용 완료(12개 명령).
+- `npm test` 4개, `npm run test:browser` 1개, `npm run check:deploy` 통과.
+- 최초 교사 이메일은 사용자에게 질문했으며 아직 확인 대기 중이다. `TEACHER_EMAILS`는 여전히 빈 값이다.
+- 다음은 교사 이메일 확정, 비밀값 등록, Worker 배포 및 실제 메일/계정 검증이다. Google의 기존 `MAIL_SECRET`은 사용자가 안전한 직접 입력 방식으로 제공해야 하며 채팅으로 요청하지 않는다.
+- Worker 운영 배포와 실제 인증메일 검증은 아직 수행하지 않았다. `config.js`의 `apiUrl`은 계속 빈 값이다.
 
 ## 사용자 요청과 현재 상태
 
@@ -39,7 +49,7 @@
 7. 사용자와 테스트 계정으로 실제 인증번호 수신·승인·저장·로그아웃을 검증한다. 실제 학생 작업을 테스트로 제출하지 않는다.
 8. 모든 연결 검증 후에만 `config.js`의 `apiUrl`을 활성화하고 변경을 검증·커밋·푸시한다.
 
-현재 `TEACHER_EMAILS`는 빈 값, DB ID는 placeholder, `config.js`의 `apiUrl`도 빈 값이다. 기존 사이트는 온라인 계정 기능 비활성 상태를 유지한다.
+이전 인계 당시 `TEACHER_EMAILS`는 빈 값, DB ID는 placeholder, `config.js`의 `apiUrl`도 빈 값이었다. 최신 상태는 상단 체크포인트를 따른다.
 
 ## 로컬 도구
 
