@@ -10,7 +10,9 @@
 - 최신 주소로 Cloudflare의 `MAIL_URL` 갱신 완료: `https://script.google.com/macros/s/AKfycbz9glQQcTNwWERsSrjHpG7xMeb7kSsqC8vvYLKzos0ZHa8kmIWl_5VLA7Ok7dqC5ZVA/exec`
 - 교사 이메일로 실제 `/auth/request-code` 요청 성공. challengeId와 expiresIn 300 응답 확인.
 - 사용자 실제 메일 수신 확인 완료. 로컬 미리보기에서 사용자가 직접 인증번호를 입력했고 교사 표시를 확인했다. 프록시의 비밀값 없는 상태 기록에서 request-code/verify-code/me/classes 모두 HTTP 200 및 role=teacher 확인.
-- 교사 로그아웃 확인과 별도 학생 테스트 이메일 선택을 사용자에게 요청했다. 실제 학생 승인·저장 검증 후 공개 활성화를 진행한다. `config.js`의 `apiUrl`은 계속 빈 값이다.
+- 교사 로그아웃 HTTP 200 및 사용자 화면 확인 완료. 사용자가 승인한 테스트 학생 주소로 실제 로그인(role=student), 학급 참여, 교사 승인, 진행 기록 저장(PUT 200), 새로고침 후 재조회(GET 200)까지 완료했다. 사용자가 `저장확인용` 값 유지도 확인했다.
+- 교사 화면의 학습 기록 조회 요청도 운영 API에서 HTTP 200 확인 완료. 테스트 학급/학생 데이터는 정리 대기 중이다.
+- `config.js`의 `apiUrl`을 운영 API로 활성화했다. `npm test`, `npm run test:browser`, `npm run check:deploy` 재통과. 공개 사이트 출처의 CORS preflight 204 및 허용 출처 확인 완료. GitHub Pages 반영 확인은 푸시 후 진행한다.
 - 로컬 미리보기는 `http://127.0.0.1:8788`, 임시 서버 파일은 `%TEMP%/character-studio-live-preview.cjs`다. 운영 API로 전달하며 임시 config 응답에서만 API를 활성화한다. `/__verification`은 경로·상태·역할만 기록하며 인증번호·토큰·응답 본문은 기록하지 않는다. 프로세스는 세션 종료 시 중단될 수 있다.
 
 ### 이전 진행 기록

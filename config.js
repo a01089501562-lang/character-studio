@@ -1,6 +1,6 @@
 window.STUDIO_CONFIG = {
   // Set only after API deployment and authentication tests pass. Empty disables online accounts.
-  apiUrl: '',
+  apiUrl: 'https://character-studio-api.character-studio-1f55a0ad.workers.dev/api/v1',
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzdlAFhXomx0qQBHlzQNq4I96WfOfhqF5PnS0cCZOKr0SkR60mjVxiOmpe9UdFny9-Q/exec',
   submissionUrl: 'mailto:poon2@korea.kr?subject=' + encodeURIComponent('캐릭터 제작 작품 제출'),
   submissionLabel: '이메일로 작품 제출하기',
