@@ -223,7 +223,7 @@ test(
       assert.equal(exported.readUInt32LE(0), 0x04034b50);
       assert.ok(exported.includes(Buffer.from("브라우저 테스트 루미")));
       assert.ok(exported.includes(Buffer.from("작품 제출 현황")));
-      assert.ok(exported.includes(Buffer.from("제출 테스트 루미")));
+      assert.ok(exported.includes(Buffer.from("제출 완료")));
       await download.saveAs(path.join(output, "학습기록.xlsx"));
       await teacher.screenshot({
         path: path.join(output, "teacher-desktop.png"),

@@ -24,24 +24,24 @@ test("Excel export preserves text, checks, dates and empty classes in valid XML 
         parts[bytes.subarray(offset + 30, start).toString()] = bytes.subarray(start, start + size).toString();
         offset = start + size;
       }
-      assert.equal(Object.keys(parts).length, 7);
+      assert.equal(Object.keys(parts).length, 6);
       assert.equal(bytes.readUInt32LE(offset), 0x02014b50);
       assert.equal(bytes.readUInt32LE(bytes.length - 22), 0x06054b50);
       const result = await page.evaluate((parts) => {
         const parsed = Object.values(parts).map((xml) => new DOMParser().parseFromString(xml, "application/xml"));
+        const workbook = new DOMParser().parseFromString(parts["xl/workbook.xml"], "application/xml");
         const sheet = new DOMParser().parseFromString(parts["xl/worksheets/sheet1.xml"], "application/xml");
-        const submission = new DOMParser().parseFromString(parts["xl/worksheets/sheet2.xml"], "application/xml");
         return { errors: parsed.some((doc) => doc.querySelector("parsererror")), rows: sheet.querySelectorAll("row").length,
-          submissionRows: submission.querySelectorAll("row").length,
-          submissionCells: Object.fromEntries([...submission.querySelectorAll("c")].map((cell) => [cell.getAttribute("r"), cell.textContent])),
+          sheetNames: [...workbook.querySelectorAll("sheet")].map(s => s.getAttribute("name")),
           formulas: sheet.querySelectorAll("f").length,
           lastCells: [...sheet.querySelectorAll("row")].map((row) => row.lastElementChild.textContent),
           cells: Object.fromEntries([...sheet.querySelectorAll("c")].map((cell) => [cell.getAttribute("r"), cell.textContent])) };
       }, parts);
       assert.equal(result.errors, false);
       assert.equal(result.rows, students.length + 1);
-      assert.equal(result.submissionRows, students.length + 1);
       assert.equal(result.formulas, 0);
+      assert.deepEqual(result.sheetNames, ["학습기록"]);
+      assert.equal(parts["xl/worksheets/sheet2.xml"], undefined);
       assert.equal(result.lastCells[0], "작품 제출 현황");
       if (students.length) {
         assert.equal(result.cells.A2, "001");
@@ -57,12 +57,6 @@ test("Excel export preserves text, checks, dates and empty classes in valid XML 
         assert.equal(result.cells.K2, "미완료");
         assert.equal(result.cells.I3, "기록 없음");
         assert.deepEqual(result.lastCells.slice(1), ["제출 완료", "제출 기록 없음"]);
-        assert.equal(result.submissionCells.A2, "001");
-        assert.equal(result.submissionCells.C2, "제출 완료");
-        assert.equal(result.submissionCells.D2, "제출 루미");
-        assert.equal(result.submissionCells.F2, "2024-01-01 09:00:00");
-        assert.equal(result.submissionCells.G2, "제출 기록 없음 (선택)");
-        assert.equal(result.submissionCells.C3, "제출 기록 없음");
       }
     }
   } finally { await browser.close(); }

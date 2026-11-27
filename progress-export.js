@@ -77,38 +77,26 @@ export function createProgressWorkbook(students) {
       ...checklist.map((item) => checks[item.id] === true ? "완료" : "미완료"),
       student.submission?.actionAt ? "제출 완료" : "제출 기록 없음"];
   })];
-  const submissionRows = [["학생 번호", "이름", "작품 제출 상태", "제출한 캐릭터 이름",
-    "동작 시트 (필수)", "동작 시트 최근 제출 시각 (한국 시간)", "3면도 (선택)", "3면도 최근 제출 시각 (한국 시간)", "안내"],
-    ...students.map((student) => {
-      const record = student.submission;
-      return [String(student.studentNumber ?? ""), student.name,
-        record?.actionAt ? "제출 완료" : "제출 기록 없음", record?.characterName || "",
-        record?.actionAt ? "제출 완료" : "제출 기록 없음", record?.actionAt ? date.format(new Date(record.actionAt * 1000)) : "",
-        record?.turnaroundAt ? "제출 완료" : "제출 기록 없음 (선택)", record?.turnaroundAt ? date.format(new Date(record.turnaroundAt * 1000)) : "",
-        "로그인 후 선택한 학급에서 제출한 기록입니다. 이전 제출·이메일 제출은 자동 반영되지 않습니다. 각 파일의 최근 성공 기록을 표시합니다."];
-    })];
-  function worksheet(values, progress) {
+  function worksheet(values) {
   const last = column(values[0].length - 1) + values.length;
   const sheetRows = values.map((row, r) => `<row r="${r + 1}" ht="${r ? 60 : 90}" customHeight="1">${row.map((value, c) => {
     const ref = column(c) + (r + 1);
-    const style = r === 0 ? 1 : progress && c === 4 ? 2 : 0;
+    const style = r === 0 ? 1 : c === 4 ? 2 : 0;
     return typeof value === "number"
       ? `<c r="${ref}" s="${style}"><v>${value}</v></c>`
       : `<c r="${ref}" s="${style}" t="inlineStr"><is><t xml:space="preserve">${xml(value)}</t></is></c>`;
   }).join("")}</row>`).join("");
-  const widths = progress
-    ? `<col min="1" max="5" width="14" customWidth="1"/><col min="6" max="8" width="36" customWidth="1"/><col min="9" max="9" width="25" customWidth="1"/><col min="10" max="${headers.length}" width="26" customWidth="1"/>`
-    : '<col min="1" max="2" width="14" customWidth="1"/><col min="3" max="8" width="26" customWidth="1"/><col min="9" max="9" width="55" customWidth="1"/>';
+  const widths =
+    `<col min="1" max="5" width="14" customWidth="1"/><col min="6" max="8" width="36" customWidth="1"/><col min="9" max="9" width="25" customWidth="1"/><col min="10" max="${headers.length}" width="26" customWidth="1"/>`;
   return `<worksheet xmlns="${ns}"><dimension ref="A1:${last}"/><sheetViews><sheetView workbookViewId="0"><pane xSplit="2" ySplit="1" topLeftCell="C2" activePane="bottomRight" state="frozen"/></sheetView></sheetViews><cols>${widths}</cols><sheetData>${sheetRows}</sheetData><autoFilter ref="A1:${last}"/></worksheet>`;
   }
   const relationship = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
   return zip({
-    "[Content_Types].xml": `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
+    "[Content_Types].xml": `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
     "_rels/.rels": `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${relationship}/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
-    "xl/workbook.xml": `<workbook xmlns="${ns}" xmlns:r="${relationship}"><sheets><sheet name="학습기록" sheetId="1" r:id="rId1"/><sheet name="작품 제출 현황" sheetId="2" r:id="rId3"/></sheets></workbook>`,
-    "xl/_rels/workbook.xml.rels": `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${relationship}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${relationship}/styles" Target="styles.xml"/><Relationship Id="rId3" Type="${relationship}/worksheet" Target="worksheets/sheet2.xml"/></Relationships>`,
+    "xl/workbook.xml": `<workbook xmlns="${ns}" xmlns:r="${relationship}"><sheets><sheet name="학습기록" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+    "xl/_rels/workbook.xml.rels": `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${relationship}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${relationship}/styles" Target="styles.xml"/></Relationships>`,
     "xl/styles.xml": `<styleSheet xmlns="${ns}"><fonts count="2"><font><sz val="11"/><name val="맑은 고딕"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="맑은 고딕"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF365870"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="9" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment vertical="top"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`,
-    "xl/worksheets/sheet1.xml": worksheet(rows, true),
-    "xl/worksheets/sheet2.xml": worksheet(submissionRows, false),
+    "xl/worksheets/sheet1.xml": worksheet(rows),
   });
 }
