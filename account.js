@@ -443,19 +443,19 @@ function start() {
         box,
       );
       button(
-        "기록 내려받기",
+        "학습기록 엑셀로 저장",
         async () => {
           const data = await call(base + "/progress");
+          const { createProgressWorkbook } = await import("./progress-export.js");
           const link = document.createElement("a"),
-            url = URL.createObjectURL(
-              new Blob([JSON.stringify(data, null, 2)], {
-                type: "application/json",
-              }),
-            );
+            url = URL.createObjectURL(createProgressWorkbook(data.students));
           link.href = url;
-          link.download = "학급기록.json";
+          link.download = (cls.name.replace(/[\\/:*?"<>|\x00-\x1f]/g, "_") || "학급") + "_학습기록.xlsx";
+          document.body.append(link);
           link.click();
-          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 60000);
+          say("학습기록 엑셀 파일의 다운로드를 시작했습니다.");
         },
         box,
       );

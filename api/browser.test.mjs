@@ -198,6 +198,15 @@ test(
       await teacher
         .getByText("캐릭터: 브라우저 테스트 루미", { exact: true })
         .waitFor();
+      const downloadPromise = teacher.waitForEvent("download");
+      await teacher.getByRole("button", { name: "학습기록 엑셀로 저장", exact: true }).click();
+      const download = await downloadPromise;
+      assert.match(download.suggestedFilename(), /_학습기록\.xlsx$/);
+      assert.equal(await download.failure(), null);
+      const exported = await readFile(await download.path());
+      assert.equal(exported.readUInt32LE(0), 0x04034b50);
+      assert.ok(exported.includes(Buffer.from("브라우저 테스트 루미")));
+      await download.saveAs(path.join(output, "학습기록.xlsx"));
       await teacher.screenshot({
         path: path.join(output, "teacher-desktop.png"),
         fullPage: false,
