@@ -5,11 +5,13 @@
     {step:4, label:'선화·채색 캔버스 열기', title:'기본형 선화·채색 캔버스', help:'3번에서 그린 그림을 이어서 다듬고 색을 더해 보세요. 이 캔버스는 단일 레이어이므로, 레이어를 나누려면 드로잉 앱을 사용하세요.'},
     {step:5, label:'완성 확인·저장 캔버스 열기', title:'기본형 완성 확인·저장 캔버스', help:'완성한 기본형을 확인하고 PNG로 저장하세요. 레이어가 있는 편집 원본은 사용 중인 드로잉 앱에서 별도로 저장하세요.'}
   ];
-  let opener = null;
+  let opener = null, currentStage = 0;
+  const stageButtons = [];
   const panel = document.createElement('dialog');
   panel.className = 'drawing-dialog';
   panel.setAttribute('aria-labelledby', 'drawingTitle');
   panel.innerHTML = `<div class="drawing-heading"><div><h2 id="drawingTitle">기본형 스케치 캔버스</h2><p id="drawingInstructions">원과 선으로 나만의 캐릭터를 그려 보세요.</p></div><button type="button" class="button secondary" id="drawingClose">닫기</button></div>
+    <nav class="drawing-stages" aria-label="기본형 실습 단계"><button type="button" class="button secondary" id="drawingPrevious">3번으로 돌아가기</button><strong id="drawingStage" aria-live="polite">3번 · 스케치</strong><button type="button" class="button primary" id="drawingNext">4번에서 이어서 작업</button></nav>
     <div class="drawing-tools" role="toolbar" aria-label="그리기 도구">
       <button type="button" class="button secondary" id="drawingPen" aria-pressed="true">펜</button>
       <button type="button" class="button secondary" id="drawingEraser" aria-pressed="false">지우개</button>
@@ -86,20 +88,39 @@
       dirty=false;status('PNG 다운로드를 요청했어요. 다운로드 폴더를 확인하세요.');
     },'image/png');
   };
-  stages.forEach(stage => {
+  function showStage(index) {
+    currentStage = index;
+    const stage = stages[index];
+    opener = stageButtons[index];
+    find('drawingTitle').textContent = stage.title;
+    find('drawingInstructions').textContent = stage.help;
+    find('drawingStage').textContent = ['3번 · 스케치', '4번 · 선화·채색', '5번 · 완성 확인·저장'][index];
+    find('drawingPrevious').hidden = index === 0;
+    find('drawingPrevious').textContent = `${stage.step - 1}번으로 돌아가기`;
+    find('drawingNext').hidden = index === stages.length - 1;
+    find('drawingNext').textContent = index === 0 ? '4번에서 이어서 작업' : '5번에서 완성 확인';
+    status('3·4·5번은 같은 그림을 이어서 사용해요. 단계 이동과 창 닫기로 그림은 지워지지 않아요. 새로고침 전에는 PNG로 저장하세요.');
+    if (!panel.open) panel.showModal();
+    document.body.classList.add('drawing-active');
+  }
+  find('drawingPrevious').onclick = () => {
+    if (currentStage > 0) { showStage(currentStage - 1); find('drawingNext').focus(); }
+  };
+  find('drawingNext').onclick = () => {
+    if (currentStage < stages.length - 1) {
+      showStage(currentStage + 1);
+      (currentStage === stages.length - 1 ? find('drawingSave') : find('drawingNext')).focus();
+    }
+  };
+  stages.forEach((stage, index) => {
     const host = document.querySelector(`#steps1 .step:nth-child(${stage.step}) > div`);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'button primary canvas-open';
     button.textContent = stage.label;
     button.setAttribute('aria-haspopup', 'dialog');
-    button.onclick = () => {
-      opener = button;
-      find('drawingTitle').textContent = stage.title;
-      find('drawingInstructions').textContent = stage.help;
-      panel.showModal();
-      document.body.classList.add('drawing-active');
-    };
+    button.onclick = () => showStage(index);
+    stageButtons.push(button);
     host.append(button);
   });
   find('drawingClose').onclick=()=>panel.close();
