@@ -35,12 +35,14 @@ test("Excel export preserves text, checks, dates and empty classes in valid XML 
           submissionRows: submission.querySelectorAll("row").length,
           submissionCells: Object.fromEntries([...submission.querySelectorAll("c")].map((cell) => [cell.getAttribute("r"), cell.textContent])),
           formulas: sheet.querySelectorAll("f").length,
+          lastCells: [...sheet.querySelectorAll("row")].map((row) => row.lastElementChild.textContent),
           cells: Object.fromEntries([...sheet.querySelectorAll("c")].map((cell) => [cell.getAttribute("r"), cell.textContent])) };
       }, parts);
       assert.equal(result.errors, false);
       assert.equal(result.rows, students.length + 1);
       assert.equal(result.submissionRows, students.length + 1);
       assert.equal(result.formulas, 0);
+      assert.equal(result.lastCells[0], "작품 제출 현황");
       if (students.length) {
         assert.equal(result.cells.A2, "001");
         assert.equal(result.cells.B2, "=1+1");
@@ -54,6 +56,7 @@ test("Excel export preserves text, checks, dates and empty classes in valid XML 
         assert.equal(result.cells.J2, "완료");
         assert.equal(result.cells.K2, "미완료");
         assert.equal(result.cells.I3, "기록 없음");
+        assert.deepEqual(result.lastCells.slice(1), ["제출 완료", "제출 기록 없음"]);
         assert.equal(result.submissionCells.A2, "001");
         assert.equal(result.submissionCells.C2, "제출 완료");
         assert.equal(result.submissionCells.D2, "제출 루미");

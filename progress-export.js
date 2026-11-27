@@ -66,7 +66,7 @@ export function createProgressWorkbook(students) {
   });
   const headers = ["학생 번호", "이름", "완료 항목 수", "전체 항목 수", "진행률",
     "캐릭터 이름", "성격과 좋아하는 것", "반드시 유지할 특징 3가지", "마지막 저장 시각 (한국 시간)",
-    ...checklist.map((item) => item.label)];
+    ...checklist.map((item) => item.label), "작품 제출 현황"];
   const rows = [headers, ...students.map((student) => {
     const checks = student.checks || {}, notes = student.notes || {};
     const completed = checklist.filter((item) => checks[item.id] === true).length;
@@ -74,7 +74,8 @@ export function createProgressWorkbook(students) {
       checklist.length ? completed / checklist.length : 0,
       notes.characterName, notes.personality, notes.features,
       student.updatedAt ? date.format(new Date(student.updatedAt * 1000)) : "기록 없음",
-      ...checklist.map((item) => checks[item.id] === true ? "완료" : "미완료")];
+      ...checklist.map((item) => checks[item.id] === true ? "완료" : "미완료"),
+      student.submission?.actionAt ? "제출 완료" : "제출 기록 없음"];
   })];
   const submissionRows = [["학생 번호", "이름", "작품 제출 상태", "제출한 캐릭터 이름",
     "동작 시트 (필수)", "동작 시트 최근 제출 시각 (한국 시간)", "3면도 (선택)", "3면도 최근 제출 시각 (한국 시간)", "안내"],
