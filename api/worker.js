@@ -110,6 +110,7 @@ export default {
       query(e, "DELETE FROM limits WHERE expires < ?", t),
       query(e, "DELETE FROM audit WHERE created < ?", t - 30 * 86400),
       query(e, "DELETE FROM progress WHERE updated < ?", t - 365 * 86400),
+      query(e, "DELETE FROM submissions WHERE action_at < ?", t - 365 * 86400),
     ]);
   },
 };
@@ -122,7 +123,8 @@ async function route(req, e) {
   let b = {};
   if (["POST", "PUT"].includes(method)) {
     const raw = await req.text();
-    need(raw.length <= 20000, 413, "요청이 너무 큽니다.");
+    const maxBody = /^\/classes\/[^/]+\/me\/submission$/.test(p) ? 28 * 1024 * 1024 : 20000;
+    need(raw.length <= maxBody, 413, "요청이 너무 큽니다.");
     try {
       b = JSON.parse(raw);
       need(b && typeof b === "object" && !Array.isArray(b));
@@ -375,6 +377,48 @@ async function route(req, e) {
   ).first();
   need(cls, 404);
   const owns = teacher && cls.teacher_id === session?.id;
+  if (tail === "/me/submission" && method === "POST") {
+    need(session && !teacher, 403);
+    const membership = await query(e,
+      "SELECT status FROM members WHERE class_id=? AND user_id=?", classId, session.id).first();
+    need(membership?.status === "approved", 403, "교사의 승인이 필요합니다.");
+    need(/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(e.SUBMISSION_URL || ""),
+      503, "작품 제출 연결을 준비 중입니다.");
+    need(b.studentId === session.student_number && b.name === session.name,
+      400, "학급에 등록된 학번과 이름으로 제출하세요.");
+    need(text(b.character, 30) && typeof b.message === "string" && b.message.length <= 500);
+    need(Array.isArray(b.files) && b.files.length >= 1 && b.files.length <= 2);
+    need(b.files[0]?.label === "동작시트" && (b.files.length === 1 || b.files[1]?.label === "3면도"));
+    for (const file of b.files) {
+      need(typeof file.data === "string" && file.data.length <= 13981016 &&
+        file.data.length % 4 === 0 && /^iVBORw0KGgo[A-Za-z0-9+/]*={0,2}$/.test(file.data),
+        400, "파일당 10MB 이하의 PNG를 제출하세요.");
+      const size = file.data.length / 4 * 3 - (file.data.endsWith("==") ? 2 : file.data.endsWith("=") ? 1 : 0);
+      need(size <= 10 * 1024 * 1024, 413);
+    }
+    await limit(e, "submission:" + session.id, 10, 3600);
+    let result;
+    try {
+      const response = await fetch(e.SUBMISSION_URL, {
+        method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ studentId: session.student_number, name: session.name,
+          character: b.character, message: b.message, files: b.files }),
+      });
+      result = await response.json();
+      need(response.ok && result.ok === true && Array.isArray(result.files) && result.files.length === b.files.length, 502);
+    } catch {
+      throw new Failure(502, "제출 완료를 확인하지 못했습니다. 이미 저장되었을 수 있으니 선생님께 확인한 후 다시 시도하세요.");
+    }
+    const submittedAt = now();
+    try {
+      await query(e,
+        "INSERT INTO submissions(class_id,user_id,action_at,turnaround_at,character_name) VALUES(?,?,?,?,?) ON CONFLICT(class_id,user_id) DO UPDATE SET action_at=excluded.action_at,turnaround_at=COALESCE(excluded.turnaround_at,submissions.turnaround_at),character_name=excluded.character_name",
+        classId, session.id, submittedAt, b.files.length === 2 ? submittedAt : null, b.character).run();
+    } catch {
+      return { ok: true, files: b.files.map(f => ({ label: f.label })), recorded: false };
+    }
+    return { ok: true, files: b.files.map(f => ({ label: f.label })), recorded: true };
+  }
   if (tail === "/me/progress") {
     need(session, 403);
     const membership = await query(
@@ -443,7 +487,7 @@ async function route(req, e) {
     const rows = (
       await query(
         e,
-        "SELECT users.id,users.name,users.student_number,progress.notes,progress.checks,progress.version,progress.updated FROM members JOIN users ON users.id=members.user_id LEFT JOIN progress ON progress.user_id=users.id AND progress.class_id=members.class_id WHERE members.class_id=? AND members.status='approved'",
+        "SELECT users.id,users.name,users.student_number,progress.notes,progress.checks,progress.version,progress.updated,submissions.action_at,submissions.turnaround_at,submissions.character_name FROM members JOIN users ON users.id=members.user_id LEFT JOIN progress ON progress.user_id=users.id AND progress.class_id=members.class_id LEFT JOIN submissions ON submissions.user_id=users.id AND submissions.class_id=members.class_id WHERE members.class_id=? AND members.status='approved'",
         classId,
       ).all()
     ).results;
@@ -452,6 +496,8 @@ async function route(req, e) {
         id: r.id,
         name: r.name,
         studentNumber: r.student_number,
+        submission: r.action_at ? { actionAt: r.action_at, turnaroundAt: r.turnaround_at,
+          characterName: r.character_name } : null,
         ...decode(r),
       })),
     };
@@ -519,7 +565,10 @@ async function route(req, e) {
   }
   if (tail === "/records" && method === "DELETE") {
     need(b.confirm === undefined);
-    await query(e, "DELETE FROM progress WHERE class_id=?", classId).run();
+    await e.DB.batch([
+      query(e, "DELETE FROM progress WHERE class_id=?", classId),
+      query(e, "DELETE FROM submissions WHERE class_id=?", classId),
+    ]);
     return { ok: true };
   }
   throw new Failure(404, "경로를 찾을 수 없습니다.");

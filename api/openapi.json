@@ -16,6 +16,44 @@
     }
   ],
   "paths": {
+    "/classes/{id}/me/submission": {
+      "post": {
+        "summary": "승인 학생의 작품을 제출하고 성공 현황 저장",
+        "description": "기존 Apps Script에 전달합니다. 필수 동작시트와 선택 3면도 PNG는 각각 최대 10MB입니다. 학번과 이름은 로그인 계정과 같아야 합니다. 개발자 조회 키로는 호출할 수 없습니다.",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": {
+            "type": "object", "required": ["studentId", "name", "character", "message", "files"],
+            "properties": {
+              "studentId": { "type": "string" }, "name": { "type": "string" },
+              "character": { "type": "string", "maxLength": 30 },
+              "message": { "type": "string", "maxLength": 500 },
+              "files": { "type": "array", "minItems": 1, "maxItems": 2, "items": {
+                "type": "object", "required": ["label", "data"], "properties": {
+                  "label": { "enum": ["동작시트", "3면도"] }, "data": { "type": "string", "contentEncoding": "base64" }
+                }
+              } }
+            }
+          } } }
+        },
+        "responses": {
+          "200": { "description": "파일 전달 성공. recorded=false이면 현황 저장만 실패했으므로 파일 재제출 대신 교사 확인이 필요합니다.",
+            "content": { "application/json": { "schema": {
+              "type": "object", "properties": {
+                "ok": { "const": true }, "recorded": { "type": "boolean" },
+                "files": { "type": "array", "items": { "type": "object", "properties": { "label": { "type": "string" } } } }
+              }
+            } } }
+          },
+          "400": { "description": "입력 오류 또는 계정과 학번·이름 불일치" },
+          "401": { "description": "로그인 필요" }, "403": { "description": "승인 학생만 허용" },
+          "413": { "description": "파일 또는 요청 용량 초과" }, "429": { "description": "학생당 시간당 10회 제한" },
+          "502": { "description": "제출 완료 확인 실패. 이미 저장되었을 수 있으므로 교사 확인 필요" },
+          "503": { "description": "제출처 설정 필요" }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "GET /health",
@@ -2736,6 +2774,17 @@
           },
           "studentNumber": {
             "type": "string"
+          },
+          "submission": {
+            "type": ["object", "null"],
+            "description": "이 학급의 서버 확인 제출 현황. null은 기록 없음이며 미제출 확정이 아닙니다.",
+            "properties": {
+              "actionAt": { "type": "integer", "description": "동작 시트 최근 성공 Unix 초" },
+              "turnaroundAt": { "type": ["integer", "null"], "description": "3면도 최근 성공 Unix 초" },
+              "characterName": { "type": "string" }
+            },
+            "required": ["actionAt", "turnaroundAt", "characterName"],
+            "additionalProperties": false
           },
           "notes": {
             "$ref": "#/components/schemas/Notes"

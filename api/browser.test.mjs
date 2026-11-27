@@ -35,8 +35,14 @@ test(
       MAIL_SECRET: "test-only",
       OTP_SECRET: "test-only",
       TEACHER_EMAILS: "teacher@example.com",
+      SUBMISSION_URL: "https://script.google.com/macros/s/test-only/exec",
     };
     globalThis.fetch = async (url, opts) => {
+      if (url === env.SUBMISSION_URL) {
+        const payload = JSON.parse(opts.body);
+        assert.equal(payload.studentId, "20101");
+        return Response.json({ ok: true, files: payload.files.map(f => ({ label: f.label })) });
+      }
       if (url !== env.MAIL_URL) return originalFetch(url, opts);
       const sent = JSON.parse(JSON.parse(opts.body).payload);
       mail.set(sent.email, sent.code);
@@ -198,6 +204,16 @@ test(
       await teacher
         .getByText("캐릭터: 브라우저 테스트 루미", { exact: true })
         .waitFor();
+      await student.locator('.cs-submit [name="studentId"]').fill("20101");
+      await student.locator('.cs-submit [name="name"]').fill("테스트 학생");
+      await student.locator('.cs-submit [name="character"]').fill("제출 테스트 루미");
+      await student.locator('.cs-submit [name="action"]').setInputFiles({
+        name: "test.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aZ1cAAAAASUVORK5CYII=", "base64"),
+      });
+      await student.getByRole("button", { name: "작품 제출하기", exact: true }).click();
+      await student.getByText(/학급의 작품 제출 현황에도 반영되었어요/).waitFor();
+      await student.locator(".cs-submit").screenshot({ path: path.join(output, "submission-mobile.png") });
+      assert.equal(DB.db.prepare("SELECT COUNT(*) AS n FROM submissions").get().n, 1);
       const downloadPromise = teacher.waitForEvent("download");
       await teacher.getByRole("button", { name: "학습기록 엑셀로 저장", exact: true }).click();
       const download = await downloadPromise;
@@ -206,6 +222,8 @@ test(
       const exported = await readFile(await download.path());
       assert.equal(exported.readUInt32LE(0), 0x04034b50);
       assert.ok(exported.includes(Buffer.from("브라우저 테스트 루미")));
+      assert.ok(exported.includes(Buffer.from("작품 제출 현황")));
+      assert.ok(exported.includes(Buffer.from("제출 테스트 루미")));
       await download.saveAs(path.join(output, "학습기록.xlsx"));
       await teacher.screenshot({
         path: path.join(output, "teacher-desktop.png"),

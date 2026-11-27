@@ -12,6 +12,7 @@
       '<label>동작 시트 PNG (필수)<input name="action" type="file" accept="image/png" required></label>' +
       '<label>3면도 시트 PNG (선택)<input name="turnaround" type="file" accept="image/png"></label>' +
       '<p class="small">파일당 최대 10MB. 학번·이름과 작품은 선생님의 Google 드라이브에 저장되고 이메일로 전달됩니다.</p>' +
+      '<p class="small">로그인 후 승인된 학급을 선택하고 제출하면 엑셀의 작품 제출 현황에도 반영됩니다. 이메일 제출과 로그인 전 제출은 자동으로 반영되지 않습니다.</p>' +
       '<label>선생님께 남길 말 (선택)<textarea name="message" rows="2" maxlength="500"></textarea></label>' +
       '<button type="submit" class="cs-button">작품 제출하기</button>' +
       '<p class="cs-status" role="status" aria-live="polite"></p></form>';
@@ -51,18 +52,25 @@
       form.setAttribute('aria-busy', 'true');
       say('업로드 중이에요… 창을 닫지 마세요.');
       try {
+        var send = window.STUDIO_ONLINE_ACTIVE ? window.STUDIO_SUBMISSION.prepare(payload) : null;
         payload.files = await Promise.all(picks.map(async function (pick) {
           return { label: pick.label, data: await readBase64(pick.file) };
         }));
+        var result;
+        if (send) result = await send(payload.files);
+        else {
         var response = await fetch(endpoint, {
           method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
         if (!response.ok) throw new Error('서버 응답 오류');
-        var result = await response.json();
+        result = await response.json();
+        }
         if (!result.ok) throw new Error(result.error || '서버가 제출 완료를 확인하지 못했습니다.');
         if (!Array.isArray(result.files)) throw new Error('응답 형식을 확인하지 못했습니다.');
-        say('제출 완료! ' + result.files.length + '개 파일이 선생님께 전달되었어요.', 'ok');
+        say('제출 완료! ' + result.files.length + '개 파일이 선생님께 전달되었어요.' +
+          (send ? (result.recorded ? ' 학급의 작품 제출 현황에도 반영되었어요.' : ' 제출 현황 저장에는 실패했어요. 파일을 다시 제출하지 말고 선생님께 확인하세요.') :
+            ' 로그인 전 제출이므로 학급의 작품 제출 현황에는 자동 반영되지 않아요.'), 'ok');
         form.elements.namedItem('action').value = '';
         form.elements.namedItem('turnaround').value = '';
       } catch (error) {

@@ -90,18 +90,18 @@ function start() {
     body.append(f);
     return f;
   }
-  async function call(path, method = "GET", data) {
+  async function call(path, method = "GET", data, sessionToken = auth?.token) {
     const r = await fetch(api.replace(/\/$/, "") + path, {
       method,
       headers: {
         "Content-Type": "application/json",
-        ...(auth ? { Authorization: "Bearer " + auth.token } : {}),
+        ...(sessionToken ? { Authorization: "Bearer " + sessionToken } : {}),
       },
       ...(data ? { body: JSON.stringify(data) } : {}),
     });
     const result = await r.json();
     if (!r.ok) {
-      if (r.status === 401 && auth) {
+      if (r.status === 401 && auth?.token === sessionToken) {
         clear();
         location.reload();
       }
@@ -111,6 +111,16 @@ function start() {
     }
     return result;
   }
+  window.STUDIO_SUBMISSION = {
+    prepare(payload) {
+      if (!auth || me?.role !== "student" || !selected || !ready)
+        throw new Error("로그인 후 승인된 학급의 기록을 불러온 다음 제출하세요.");
+      if (payload.studentId !== me.studentNumber || payload.name !== me.name)
+        throw new Error("학급에 등록된 학번과 이름으로 제출하세요.");
+      const classId = selected, sessionToken = auth.token;
+      return (files) => call("/classes/" + classId + "/me/submission", "POST", { ...payload, files }, sessionToken);
+    },
+  };
   function storageRemove(store, key) {
     try {
       store.removeItem(key);
@@ -462,7 +472,7 @@ function start() {
       button(
         "학급 기록 삭제",
         async () => {
-          if (confirm("이 학급의 기획 노트와 체크리스트를 모두 삭제할까요?")) {
+          if (confirm("이 학급의 기획 노트, 체크리스트, 작품 제출 현황을 모두 삭제할까요? Google 드라이브의 작품 파일은 삭제되지 않습니다.")) {
             await call(base + "/records", "DELETE");
             say("기록을 삭제했습니다.");
           }

@@ -8,6 +8,7 @@ function database() {
   db.exec(
     readFileSync(new URL("./migrations/0001.sql", import.meta.url), "utf8"),
   );
+  db.exec(readFileSync(new URL("./migrations/0002_submissions.sql", import.meta.url), "utf8"));
   return {
     db,
     prepare(sql) {
