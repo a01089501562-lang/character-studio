@@ -155,6 +155,7 @@ function start() {
     document
       .querySelectorAll("canvas")
       .forEach((c) => c.getContext("2d")?.clearRect(0, 0, c.width, c.height));
+    window.dispatchEvent(new Event("studio-drawings-clear"));
     document
       .querySelectorAll(".cs-submit input,.cs-submit textarea")
       .forEach((i) => (i.value = ""));
