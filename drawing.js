@@ -1,13 +1,5 @@
 'use strict';
 (() => {
-  const basicStages = [
-    {step:3, label:'스케치 캔버스 열기', title:'기본형 스케치 캔버스', help:'원과 선으로 나만의 캐릭터를 그려 보세요.'},
-    {step:4, label:'선화·채색 캔버스 열기', title:'기본형 선화·채색 캔버스', help:'3번에서 그린 그림을 이어서 다듬고 색을 더해 보세요. 이 캔버스는 단일 레이어이므로, 레이어를 나누려면 드로잉 앱을 사용하세요.'},
-    {step:5, label:'완성 확인·저장 캔버스 열기', title:'기본형 완성 확인·저장 캔버스', help:'완성한 기본형을 확인하고 PNG로 저장하세요. 레이어가 있는 편집 원본은 사용 중인 드로잉 앱에서 별도로 저장하세요.'}
-  ];
-  createStudio({ stages: basicStages, hostId: 'steps1', prefix: 'drawing', filename: '캐릭터_기본형.png',
-    stageNames: ['3번 · 스케치', '4번 · 선화·채색', '5번 · 완성 확인·저장'],
-    nextNames: ['4번에서 이어서 작업', '5번에서 완성 확인'] });
   createStudio({ hostId: 'steps2', prefix: 'motion', filename: '캐릭터_작품시트.png', sheet: true,
     stageNames: ['2번 · 동작 스케치', '3번 · 선화·채색', '4번 · 작품 시트 정리', '5번 · 확인·저장'],
     nextNames: ['3번에서 이어서 작업', '4번에서 시트 정리', '5번에서 완성 확인'],
