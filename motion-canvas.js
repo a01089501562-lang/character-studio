@@ -13,7 +13,7 @@
       <button type="button" class="button secondary" id="motionDrawingUndo">실행 취소</button>
       <button type="button" class="button secondary" id="motionDrawingClear">현재 레이어 지우기</button>
       <button type="button" class="button primary" id="motionDrawingSave">PNG 저장</button>
-    </div><section class="turn-layer-panel" aria-label="레이어 관리"><div class="turn-layer-heading"><strong>레이어</strong><span id="motionLayerCount">1 / 6</span><button type="button" class="button secondary" id="motionLayerAdd">+ 레이어 추가</button><button type="button" class="button secondary" id="motionLayerDelete">선택 레이어 삭제</button></div><div id="motionLayerList" class="turn-layer-list" role="listbox" aria-label="응용동작 그림 레이어"></div></section>
+    </div><section class="turn-layer-panel" aria-label="레이어 관리"><div class="turn-layer-heading"><strong>레이어</strong><span id="motionLayerCount">1 / 6</span><button type="button" class="button secondary" id="motionLayerAdd">+ 레이어 추가</button><button type="button" class="button secondary" id="motionLayerDelete">선택 레이어 삭제</button><button type="button" class="button secondary" id="motionLayerUp">한 층 위로</button><button type="button" class="button secondary" id="motionLayerDown">한 층 아래로</button></div><div id="motionLayerList" class="turn-layer-list" role="listbox" aria-label="응용동작 그림 레이어"></div></section>
     <div class="drawing-surface motion-canvas-wrap"><canvas id="motionDrawingCanvas" width="1200" height="900" aria-label="마우스, 터치 또는 펜으로 응용동작 캐릭터를 그리는 영역">이 브라우저에서는 캔버스를 사용할 수 없습니다.</canvas></div>
     <p class="drawing-help" id="motionDrawingStatus" role="status">레이어를 선택하고 마우스·터치·태블릿 펜으로 그리세요. 보이는 레이어가 합쳐져 PNG로 저장됩니다. 기본형 1개와 서로 다른 응용동작 3개를 완성한 뒤 PNG로 저장하세요.</p>`;
   document.body.append(panel);
@@ -74,6 +74,8 @@
     find('motionDrawingUndo').disabled = !activeLayer().history.length;
     find('motionLayerAdd').disabled = layers.length >= 6;
     find('motionLayerDelete').disabled = layers.length <= 1;
+    find('motionLayerUp').disabled = selected === layers.length - 1;
+    find('motionLayerDown').disabled = selected === 0;
     find('motionLayerCount').textContent = `${layers.length} / 6`;
   }
   function checkpoint() {
@@ -117,6 +119,19 @@
     if (layers.length >= 6) return;
     layers.push(makeLayer()); selected = layers.length - 1; renderLayers(); renderList(); dirty = true; status(`${activeLayer().name}을(를) 추가했어요.`);
   };
+  function moveLayer(offset) {
+    const next = selected + offset;
+    if (active !== null || next < 0 || next >= layers.length) return;
+    const [layer] = layers.splice(selected, 1);
+    layers.splice(next, 0, layer);
+    selected = next;
+    renderLayers();
+    renderList();
+    dirty = true;
+    status(layer.name + ' 위치: 아래에서 ' + (next + 1) + '번째');
+  }
+  find('motionLayerUp').onclick = () => moveLayer(1);
+  find('motionLayerDown').onclick = () => moveLayer(-1);
   find('motionLayerDelete').onclick = () => {
     if (layers.length <= 1) return;
     const removed = activeLayer().name; layers.splice(selected, 1); selected = Math.max(0, selected - 1);

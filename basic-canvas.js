@@ -13,7 +13,7 @@
       <button type="button" class="button secondary" id="basicDrawingUndo">실행 취소</button>
       <button type="button" class="button secondary" id="basicDrawingClear">현재 레이어 지우기</button>
       <button type="button" class="button primary" id="basicDrawingSave">PNG 저장</button>
-    </div><section class="turn-layer-panel" aria-label="레이어 관리"><div class="turn-layer-heading"><strong>레이어</strong><span id="basicLayerCount">1 / 6</span><button type="button" class="button secondary" id="basicLayerAdd">+ 레이어 추가</button><button type="button" class="button secondary" id="basicLayerDelete">선택 레이어 삭제</button></div><div id="basicLayerList" class="turn-layer-list" role="listbox" aria-label="기본형 그림 레이어"></div></section>
+    </div><section class="character-palette" aria-label="캐릭터 색상표"><strong>캐릭터 색상표</strong><button type="button" class="button secondary" id="paletteAdd">현재 색 추가</button><button type="button" class="button secondary" id="paletteRemove">현재 색 삭제</button><div id="paletteColors"></div></section><section class="turn-layer-panel" aria-label="레이어 관리"><div class="turn-layer-heading"><strong>레이어</strong><span id="basicLayerCount">1 / 6</span><button type="button" class="button secondary" id="basicLayerAdd">+ 레이어 추가</button><button type="button" class="button secondary" id="basicLayerDelete">선택 레이어 삭제</button><button type="button" class="button secondary" id="basicLayerUp">한 층 위로</button><button type="button" class="button secondary" id="basicLayerDown">한 층 아래로</button></div><div id="basicLayerList" class="turn-layer-list" role="listbox" aria-label="기본형 그림 레이어"></div></section>
     <div class="drawing-surface basic-canvas-wrap"><canvas id="basicDrawingCanvas" width="1200" height="900" aria-label="마우스, 터치 또는 펜으로 기본형 캐릭터를 그리는 영역">이 브라우저에서는 캔버스를 사용할 수 없습니다.</canvas></div>
     <p class="drawing-help" id="basicDrawingStatus" role="status">레이어를 선택하고 마우스·터치·태블릿 펜으로 그리세요. 보이는 레이어가 합쳐져 PNG로 저장됩니다. 새로고침 전에 PNG로 저장하세요.</p>`;
   document.body.append(panel);
@@ -62,6 +62,8 @@
     find('basicDrawingUndo').disabled = !activeLayer().history.length;
     find('basicLayerAdd').disabled = layers.length >= 6;
     find('basicLayerDelete').disabled = layers.length <= 1;
+    find('basicLayerUp').disabled = selected === layers.length - 1;
+    find('basicLayerDown').disabled = selected === 0;
     find('basicLayerCount').textContent = `${layers.length} / 6`;
   }
   function checkpoint() {
@@ -99,12 +101,54 @@
   }
   find('basicDrawingPen').onclick = () => tool(false);
   find('basicDrawingEraser').onclick = () => tool(true);
-  find('basicDrawingColor').oninput = () => tool(false);
+  const palette = new Set();
+  const colorInput = find('basicDrawingColor');
+  function updatePalette() {
+    find('paletteAdd').disabled = palette.has(colorInput.value);
+    find('paletteRemove').disabled = !palette.has(colorInput.value);
+    for (const swatch of find('paletteColors').children) {
+      swatch.setAttribute('aria-pressed', String(swatch.value === colorInput.value));
+    }
+  }
+  find('paletteAdd').onclick = () => {
+    const color = colorInput.value;
+    if (palette.has(color)) return;
+    palette.add(color);
+    const swatch = document.createElement('button');
+    swatch.type = 'button';
+    swatch.className = 'palette-swatch';
+    swatch.value = color;
+    swatch.style.setProperty('--swatch', color);
+    swatch.textContent = color.toUpperCase();
+    swatch.onclick = () => { colorInput.value = color; tool(false); updatePalette(); };
+    find('paletteColors').append(swatch);
+    updatePalette();
+  };
+  find('paletteRemove').onclick = () => {
+    palette.delete(colorInput.value);
+    find('paletteColors').querySelector('[aria-pressed="true"]')?.remove();
+    updatePalette();
+  };
+  colorInput.oninput = () => { tool(false); updatePalette(); };
+  updatePalette();
   find('basicDrawingSize').oninput = event => {find('basicDrawingSizeValue').value = event.target.value;};
   find('basicLayerAdd').onclick = () => {
     if (layers.length >= 6) return;
     layers.push(makeLayer()); selected = layers.length - 1; renderLayers(); renderList(); dirty = true; status(`${activeLayer().name}을(를) 추가했어요.`);
   };
+  function moveLayer(offset) {
+    const next = selected + offset;
+    if (active !== null || next < 0 || next >= layers.length) return;
+    const [layer] = layers.splice(selected, 1);
+    layers.splice(next, 0, layer);
+    selected = next;
+    renderLayers();
+    renderList();
+    dirty = true;
+    status(layer.name + ' 위치: 아래에서 ' + (next + 1) + '번째');
+  }
+  find('basicLayerUp').onclick = () => moveLayer(1);
+  find('basicLayerDown').onclick = () => moveLayer(-1);
   find('basicLayerDelete').onclick = () => {
     if (layers.length <= 1) return;
     const removed = activeLayer().name; layers.splice(selected, 1); selected = Math.max(0, selected - 1);
@@ -136,6 +180,9 @@
   panel.addEventListener('close', () => {active = null; document.body.classList.remove('drawing-active'); open.focus();});
   window.addEventListener('beforeunload', event => {if(dirty) {event.preventDefault(); event.returnValue = '';}});
   window.addEventListener('studio-drawings-clear', () => {
+    palette.clear();
+    find('paletteColors').replaceChildren();
+    updatePalette();
     layers.splice(0, layers.length, makeLayer('레이어 1')); selected = 0; active = null; last = null; dirty = false;
     renderLayers(); renderList();
   });

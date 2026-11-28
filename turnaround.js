@@ -13,7 +13,7 @@
       <button type="button" class="button secondary" id="turnDrawingUndo">실행 취소</button>
       <button type="button" class="button secondary" id="turnDrawingClear">현재 레이어 지우기</button>
       <button type="button" class="button primary" id="turnDrawingSave">PNG 저장</button>
-    </div><section class="turn-layer-panel" aria-label="레이어 관리"><div class="turn-layer-heading"><strong>레이어</strong><span id="turnLayerCount">1 / 6</span><button type="button" class="button secondary" id="turnLayerAdd">+ 레이어 추가</button><button type="button" class="button secondary" id="turnLayerDelete">선택 레이어 삭제</button></div><div id="turnLayerList" class="turn-layer-list" role="listbox" aria-label="그림 레이어"></div></section><div class="drawing-surface turn-canvas-wrap"><canvas id="turnDrawingCanvas" width="1200" height="720" aria-label="마우스, 터치 또는 펜으로 그리는 스케치 영역">이 브라우저에서는 캔버스를 사용할 수 없습니다.</canvas><img class="turn-guides" src="assets/turnaround-guides.svg" alt=""></div>
+    </div><section class="turn-layer-panel" aria-label="레이어 관리"><div class="turn-layer-heading"><strong>레이어</strong><span id="turnLayerCount">1 / 6</span><button type="button" class="button secondary" id="turnLayerAdd">+ 레이어 추가</button><button type="button" class="button secondary" id="turnLayerDelete">선택 레이어 삭제</button><button type="button" class="button secondary" id="turnLayerUp">한 층 위로</button><button type="button" class="button secondary" id="turnLayerDown">한 층 아래로</button></div><div id="turnLayerList" class="turn-layer-list" role="listbox" aria-label="그림 레이어"></div></section><div class="drawing-surface turn-canvas-wrap"><canvas id="turnDrawingCanvas" width="1200" height="720" aria-label="마우스, 터치 또는 펜으로 그리는 스케치 영역">이 브라우저에서는 캔버스를 사용할 수 없습니다.</canvas><img class="turn-guides" src="assets/turnaround-guides.svg" alt=""></div>
     <p class="drawing-help" id="turnDrawingStatus" role="status">레이어를 나눠 스케치, 선화, 색칠을 할 수 있어요. 닫아도 그림은 유지되지만, 새로고침 전에 PNG로 저장하세요.</p>`;
   document.body.append(panel);
   const find = id => panel.querySelector('#' + id);
@@ -28,6 +28,8 @@
     find('turnDrawingUndo').disabled = activeLayer().history.length === 0;
     find('turnLayerAdd').disabled = layers.length >= 6;
     find('turnLayerDelete').disabled = layers.length <= 1;
+    find('turnLayerUp').disabled = selected === layers.length - 1;
+    find('turnLayerDown').disabled = selected === 0;
     find('turnLayerCount').textContent = `${layers.length} / 6`;
   }
   function renderLayers() {
@@ -60,6 +62,19 @@
     layers.push({ name: `레이어 ${layers.length + 1}`, visible: true, opacity: 100, canvas: layerCanvas, history: [] }); selected = layers.length - 1;
     renderLayers(); renderList(); dirty = true; status(`${activeLayer().name}을(를) 추가했어요.`);
   };
+  function moveLayer(offset) {
+    const next = selected + offset;
+    if (active !== null || next < 0 || next >= layers.length) return;
+    const [layer] = layers.splice(selected, 1);
+    layers.splice(next, 0, layer);
+    selected = next;
+    renderLayers();
+    renderList();
+    dirty = true;
+    status(layer.name + ' 위치: 아래에서 ' + (next + 1) + '번째');
+  }
+  find('turnLayerUp').onclick = () => moveLayer(1);
+  find('turnLayerDown').onclick = () => moveLayer(-1);
   find('turnLayerDelete').onclick = () => {
     if (layers.length <= 1) return;
     const removed = activeLayer().name; layers.splice(selected, 1); selected = Math.max(0, selected - 1);
