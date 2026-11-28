@@ -19,7 +19,7 @@
     "/classes/{id}/me/submission": {
       "post": {
         "summary": "승인 학생의 작품을 제출하고 성공 현황 저장",
-        "description": "기존 Apps Script에 전달합니다. 필수 동작시트와 선택 3면도 PNG는 각각 최대 10MB입니다. 학번과 이름은 로그인 계정과 같아야 합니다. 개발자 조회 키로는 호출할 수 없습니다.",
+        "description": "기존 Apps Script에 전달합니다. 동작시트 PNG는 필수이며 기본형과 3면도 PNG는 선택입니다. 최대 3개 파일을 보낼 수 있고 파일당 최대 10MB입니다. 학번과 이름은 로그인 계정과 같아야 합니다. 개발자 조회 키로는 호출할 수 없습니다.",
         "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
         "requestBody": {
           "required": true,
@@ -29,9 +29,9 @@
               "studentId": { "type": "string" }, "name": { "type": "string" },
               "character": { "type": "string", "maxLength": 30 },
               "message": { "type": "string", "maxLength": 500 },
-              "files": { "type": "array", "minItems": 1, "maxItems": 2, "items": {
+              "files": { "type": "array", "minItems": 1, "maxItems": 3, "items": {
                 "type": "object", "required": ["label", "data"], "properties": {
-                  "label": { "enum": ["동작시트", "3면도"] }, "data": { "type": "string", "contentEncoding": "base64" }
+                  "label": { "enum": ["동작시트", "기본형", "3면도"] }, "data": { "type": "string", "contentEncoding": "base64" }
                 }
               } }
             }

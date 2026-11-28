@@ -123,7 +123,7 @@ async function route(req, e) {
   let b = {};
   if (["POST", "PUT"].includes(method)) {
     const raw = await req.text();
-    const maxBody = /^\/classes\/[^/]+\/me\/submission$/.test(p) ? 28 * 1024 * 1024 : 20000;
+    const maxBody = /^\/classes\/[^/]+\/me\/submission$/.test(p) ? 43 * 1024 * 1024 : 20000;
     need(raw.length <= maxBody, 413, "요청이 너무 큽니다.");
     try {
       b = JSON.parse(raw);
@@ -387,8 +387,14 @@ async function route(req, e) {
     need(b.studentId === session.student_number && b.name === session.name,
       400, "학급에 등록된 학번과 이름으로 제출하세요.");
     need(text(b.character, 30) && typeof b.message === "string" && b.message.length <= 500);
-    need(Array.isArray(b.files) && b.files.length >= 1 && b.files.length <= 2);
-    need(b.files[0]?.label === "동작시트" && (b.files.length === 1 || b.files[1]?.label === "3면도"));
+    need(Array.isArray(b.files) && b.files.length >= 1 && b.files.length <= 3);
+    const labels = b.files.map((file) => file?.label);
+    need([
+      ["동작시트"],
+      ["동작시트", "기본형"],
+      ["동작시트", "3면도"],
+      ["동작시트", "기본형", "3면도"],
+    ].some((allowed) => allowed.join("\0") === labels.join("\0")));
     for (const file of b.files) {
       need(typeof file.data === "string" && file.data.length <= 13981016 &&
         file.data.length % 4 === 0 && /^iVBORw0KGgo[A-Za-z0-9+/]*={0,2}$/.test(file.data),
@@ -413,7 +419,7 @@ async function route(req, e) {
     try {
       await query(e,
         "INSERT INTO submissions(class_id,user_id,action_at,turnaround_at,character_name) VALUES(?,?,?,?,?) ON CONFLICT(class_id,user_id) DO UPDATE SET action_at=excluded.action_at,turnaround_at=COALESCE(excluded.turnaround_at,submissions.turnaround_at),character_name=excluded.character_name",
-        classId, session.id, submittedAt, b.files.length === 2 ? submittedAt : null, b.character).run();
+        classId, session.id, submittedAt, labels.includes("3면도") ? submittedAt : null, b.character).run();
     } catch {
       return { ok: true, files: b.files.map(f => ({ label: f.label })), recorded: false };
     }

@@ -10,8 +10,9 @@
       '<label>이름<input name="name" type="text" maxlength="30" required placeholder="홍길동"></label></div>' +
       '<label>캐릭터명<input name="character" type="text" maxlength="30" required placeholder="루미"></label>' +
       '<label>동작 시트 PNG (필수)<input name="action" type="file" accept="image/png" required></label>' +
+      '<label>기본형 PNG (선택)<input name="basic" type="file" accept="image/png"></label>' +
       '<label>3면도 시트 PNG (선택)<input name="turnaround" type="file" accept="image/png"></label>' +
-      '<p class="small">파일당 최대 10MB. 학번·이름과 작품은 선생님의 Google 드라이브에 저장되고 이메일로 전달됩니다.</p>' +
+      '<p class="small">동작 시트는 필수이며 기본형과 3면도는 선택할 수 있어요. 파일은 최대 3개, 파일당 10MB PNG까지 보낼 수 있습니다. 작품은 선생님의 Google 드라이브에 저장되고 이메일로 전달됩니다.</p>' +
       '<p class="small">로그인 후 승인된 학급을 선택하고 제출하면 엑셀의 작품 제출 현황에도 반영됩니다. 이메일 제출과 로그인 전 제출은 자동으로 반영되지 않습니다.</p>' +
       '<label>선생님께 남길 말 (선택)<textarea name="message" rows="2" maxlength="500"></textarea></label>' +
       '<button type="submit" class="cs-button">작품 제출하기</button>' +
@@ -40,6 +41,7 @@
       if (!payload.studentId || !payload.name || !payload.character) return say('학번, 이름, 캐릭터명을 모두 입력하세요.', 'error');
       var picks = [
         { label: '동작시트', file: form.elements.namedItem('action').files[0] },
+        { label: '기본형', file: form.elements.namedItem('basic').files[0] },
         { label: '3면도', file: form.elements.namedItem('turnaround').files[0] }
       ].filter(function (pick) { return pick.file; });
       if (!picks.length || picks[0].label !== '동작시트') return say('동작 시트 PNG를 선택하세요.', 'error');
@@ -72,6 +74,7 @@
           (send ? (result.recorded ? ' 학급의 작품 제출 현황에도 반영되었어요.' : ' 제출 현황 저장에는 실패했어요. 파일을 다시 제출하지 말고 선생님께 확인하세요.') :
             ' 로그인 전 제출이므로 학급의 작품 제출 현황에는 자동 반영되지 않아요.'), 'ok');
         form.elements.namedItem('action').value = '';
+        form.elements.namedItem('basic').value = '';
         form.elements.namedItem('turnaround').value = '';
       } catch (error) {
         say('제출 완료를 확인하지 못했어요: ' + error.message + ' 이미 저장되었을 수 있으니 선생님께 확인한 후 다시 시도하세요.', 'error');
