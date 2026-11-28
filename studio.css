@@ -20,11 +20,6 @@ input[type="file"]::file-selector-button {
   color: #fff !important;
   font-weight: 800 !important;
 }
-/* Keep white labels legible on the original light surfaces. */
-body :is(button, .button, [role="button"]), body button .zoom,
-input[type="file"]::file-selector-button {
-  text-shadow: 0 0 2px #343a40, 0 1px 2px #343a40;
-}
 @media (hover: hover) {
   body :is(button, .button, [role="button"]):not(:disabled):hover,
   input[type="file"]:not(:disabled)::file-selector-button:hover {
