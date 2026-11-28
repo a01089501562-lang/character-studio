@@ -2,6 +2,8 @@
 
 ## 최신 체크포인트 (2026-11-28)
 
+- 세 파일 제출 시 제출처에서 ‘PNG 파일을 1~2개 선택하세요’ 오류가 발생했다. 사용자는 Google Apps Script 편집기에서 수정했다고 알려왔다. 기존 웹 앱에 새 버전이 배포되었는지와 세 파일의 Drive 저장 여부는 아직 확인되지 않았다.
+- 저장소 상위의 로컬 참고 파일 `character-studio-Code.gs`에는 `MAX_FILES = 2`가 남아 있다. 편집기의 최신 소스를 보관하려면 실제 수정본과 대조해야 한다.
 - 작품 제출에서 동작 시트(필수), 기본형(선택), 3면도(선택) PNG를 최대 3개까지 받을 수 있도록 웹 폼과 Worker 검증을 갱신했다. 파일별 제한은 10MB다. 로그인 제출의 요청 크기 제한도 세 파일에 맞게 늘렸다.
 - 변경 커밋 `e2f0fa7`을 main에 푸시했고 GitHub Pages 공개 주소 `https://a01089501562-lang.github.io/character-studio/`에서 HTTP 200 및 세 번째 파일 입력·최대 3개 안내 반영을 확인했다.
 - Cloudflare Worker `character-studio-api`를 배포했다. 운영 버전 `65a0e104-1098-42d1-ba16-ae6c5408e89b`; `/api/v1/health`는 `ok=true`, 공개 사이트 Origin의 CORS preflight는 204로 확인했다.
