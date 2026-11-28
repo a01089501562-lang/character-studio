@@ -7,4 +7,5 @@
 @media print{.canvas-open,.drawing-dialog{display:none!important}}
 .studio-canvas-action{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:24px;padding-top:20px;border-top:1px solid #cddbd8}.studio-canvas-action p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}.basic-dialog{width:min(1280px,96vw)}.basic-canvas-wrap{background:white}.basic-canvas-wrap canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
 .motion-dialog{width:min(1280px,96vw)}
+.basic-drawing-drop{position:relative;top:3px;display:inline-block}
 @media(max-width:700px){.studio-canvas-action{align-items:flex-start;flex-direction:column}.studio-canvas-action .button{align-self:stretch}}
