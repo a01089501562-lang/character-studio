@@ -4,7 +4,7 @@
 .cs-submit input,.cs-submit textarea{display:block;width:100%;height:auto;margin-top:6px;padding:10px;border:1px solid #dcd6ee;border-radius:7px;background:#fff;font:inherit;font-size:16px;color:var(--ink,#28273d);box-sizing:border-box;resize:vertical}
 .cs-submit input[type=file]{padding:8px;cursor:pointer;font-size:14px}
 .cs-submit .cs-button{display:block;width:100%;padding:13px 20px;border:0;border-radius:8px;background:var(--purple,#6554d9);color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
-.cs-submit .cs-button:hover{filter:brightness(1.08)}
+
 .cs-submit .cs-button:disabled{opacity:.6;cursor:wait}
 .cs-submit :focus-visible{outline:3px solid #9a80ee;outline-offset:3px}
 .cs-status{margin:0;min-height:1.4em;font-size:14px;overflow-wrap:anywhere;color:var(--muted,#727080)}
