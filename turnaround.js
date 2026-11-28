@@ -19,7 +19,7 @@
   const find = id => panel.querySelector('#' + id);
   const canvas = find('turnDrawingCanvas');
   const ctx = canvas.getContext('2d');
-  const layers = [{ name: '레이어 1', visible: true, canvas: document.createElement('canvas'), history: [] }];
+  const layers = [{ name: '레이어 1', visible: true, opacity: 100, canvas: document.createElement('canvas'), history: [] }];
   layers[0].canvas.width = canvas.width; layers[0].canvas.height = canvas.height;
   let selected = 0, erasing = false, active = null, last = null, dirty = false;
   const status = message => { find('turnDrawingStatus').textContent = message; };
@@ -32,7 +32,12 @@
   }
   function renderLayers() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    layers.forEach(layer => { if (layer.visible) ctx.drawImage(layer.canvas, 0, 0); });
+    layers.forEach(layer => {
+      if (!layer.visible) return;
+      ctx.globalAlpha = layer.opacity / 100;
+      ctx.drawImage(layer.canvas, 0, 0);
+    });
+    ctx.globalAlpha = 1;
   }
   function renderList() {
     const list = find('turnLayerList'); list.replaceChildren();
@@ -40,14 +45,19 @@
       const row = document.createElement('div'); row.className = 'turn-layer-row' + (index === selected ? ' is-selected' : ''); row.setAttribute('role', 'option'); row.setAttribute('aria-selected', String(index === selected));
       const select = document.createElement('button'); select.type = 'button'; select.className = 'turn-layer-select'; select.textContent = layer.name; select.setAttribute('aria-label', `${layer.name} 선택`); select.onclick = () => { selected = index; renderList(); controls(); };
       const visibility = document.createElement('button'); visibility.type = 'button'; visibility.className = 'turn-layer-visibility'; visibility.textContent = layer.visible ? '보임' : '숨김'; visibility.setAttribute('aria-pressed', String(layer.visible)); visibility.setAttribute('aria-label', `${layer.name} ${layer.visible ? '숨기기' : '보이기'}`); visibility.onclick = () => { layer.visible = !layer.visible; renderLayers(); renderList(); dirty = true; };
-      row.append(select, visibility); list.append(row);
+      const opacityLabel = document.createElement('label'); opacityLabel.className = 'turn-layer-opacity'; opacityLabel.append('투명도 ');
+      const opacity = document.createElement('input'); opacity.type = 'range'; opacity.min = '0'; opacity.max = '100'; opacity.step = '1'; opacity.value = String(layer.opacity); opacity.setAttribute('aria-label', `${layer.name} 투명도`);
+      const opacityValue = document.createElement('output'); opacityValue.value = `${layer.opacity}%`; opacityValue.textContent = `${layer.opacity}%`;
+      opacity.oninput = () => { layer.opacity = Number(opacity.value); opacityValue.value = `${layer.opacity}%`; opacityValue.textContent = `${layer.opacity}%`; renderLayers(); dirty = true; };
+      opacityLabel.append(opacity, opacityValue);
+      row.append(select, visibility, opacityLabel); list.append(row);
     });
     controls();
   }
   find('turnLayerAdd').onclick = () => {
     if (layers.length >= 6) return;
     const layerCanvas = document.createElement('canvas'); layerCanvas.width = canvas.width; layerCanvas.height = canvas.height;
-    layers.push({ name: `레이어 ${layers.length + 1}`, visible: true, canvas: layerCanvas, history: [] }); selected = layers.length - 1;
+    layers.push({ name: `레이어 ${layers.length + 1}`, visible: true, opacity: 100, canvas: layerCanvas, history: [] }); selected = layers.length - 1;
     renderLayers(); renderList(); dirty = true; status(`${activeLayer().name}을(를) 추가했어요.`);
   };
   find('turnLayerDelete').onclick = () => {
@@ -100,7 +110,8 @@
     const exported=document.createElement('canvas');exported.width=canvas.width;exported.height=canvas.height;
     const output=exported.getContext('2d');output.fillStyle='#ffffff';output.fillRect(0,0,exported.width,exported.height);
     if(find('turnGuidesToggle').checked) output.drawImage(panel.querySelector('.turn-guides'),0,0,canvas.width,canvas.height);
-    layers.forEach(layer=>{if(layer.visible)output.drawImage(layer.canvas,0,0);});
+    layers.forEach(layer=>{if(layer.visible){output.globalAlpha=layer.opacity/100;output.drawImage(layer.canvas,0,0);}});
+    output.globalAlpha=1;
     exported.toBlob(blob=>{
       if(!blob){status('이미지 저장에 실패했어요. 다시 시도해 주세요.');return;}
       const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='캐릭터_정면_측면_후면.png';link.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
