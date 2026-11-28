@@ -12,3 +12,23 @@ body{background:white;font-size:16px;padding:32px 0}main{max-width:1320px;paddin
 @media(max-width:380px){main{padding:0 16px}header{padding:0 16px}.art-grid{grid-template-columns:1fr}.hero-art{height:270px}.overview{gap:18px 12px}.hero-copy{font-size:15px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 .practice-start{background:#ff9f1c;color:#271a0a}.practice-start:hover{background:#f28c0c}
+
+/* Shared button appearance also covers controls created after page load. */
+body :is(button, .button, [role="button"]),
+body button .zoom,
+input[type="file"]::file-selector-button {
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+body button:where(:not(.art-image, .menu-toggle)),
+body a.button,
+body button .zoom,
+input[type="file"]::file-selector-button {
+  background-color: #405565 !important;
+}
+body :is(.button.primary, .cs-submit .cs-button, button[aria-pressed="true"]) {
+  background-color: #10675f !important;
+}
+body .button.practice-start { background-color: #b14700 !important; }
+body .button.practice-start:hover { background-color: #943b00 !important; }
+body .turn-layer-row.is-selected .turn-layer-select { background-color: #10675f !important; }
